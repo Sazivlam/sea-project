@@ -1,6 +1,7 @@
 # Dependency directories
 node_modules/
 jspm_packages/
+/build/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -23,7 +24,11 @@ web_modules/
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 .vscode
+.idea/*
 
 
 # Mac 
 .DS_STORE
+
+
+
