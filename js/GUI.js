@@ -35,7 +35,7 @@ function startSim() {
 
         iterations.push("Iteration: " + numIter + "; Executed Event: " + chosenEvent + "<br />")
 
-        document.getElementById("iter").innerHTML = iterations;
+        document.getElementById("iter").innerHTML = iterations.join("");
 
         graph1.timeStep(1);
         graph1.execute(chosenEvent);
