@@ -1,19 +1,59 @@
-import {DCRGraph} from "./dcr"
+import { DCRGraph } from "./dcr";
+import { parser } from "./dcr_parser"
 
-
-class Simulation{
+class Simulation {
     graph: DCRGraph;
+    isRunning: boolean = false;
+    id: number;
+    log: any;
+    users: any[];
+    startTime: Date;
+    stopTime: Date;
 
-    constructor(graph: DCRGraph){
-        this.graph = graph;
+    constructor(input: string) {
+        this.graph = parser.parse(input);
+        this.users = [];
+        this.id = 1;
     }
 
-    hello(){
-        console.log(this.graph.parentGraphTemp);
+    executeEvent(event: any) {
+        this.graph.execute(event)
     }
+
+    startSimulation() {
+        this.isRunning = true;
+        this.startTime = new Date();
+    }
+
+    stopSimulation() {
+        this.isRunning = false;
+        this.stopTime = new Date();
+    }
+
+    addUsers(user: any) {
+        this.users.push(user);
+    }
+
+
+
+    hello() {
+        if (this.isRunning) {
+            console.log("Hello, i am NOT running :(");
+        } else {
+            console.log("Hello, i AM running :)");
+        }
+    }
+
+
 }
 
+var a = new Simulation((`A(0,0,0)      
+B(0,1,1)        
+A -->* B
+B *--> A
+C -->% A
+D -->+ A    
+D -->* B
+A --><> (B, D)`));
 
-var a = new Simulation(new DCRGraph("HEST"));
 a.hello()
-
