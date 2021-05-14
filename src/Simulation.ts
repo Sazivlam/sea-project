@@ -1,4 +1,4 @@
-import { DCRGraph } from "./dcr";
+import { DCRGraph, Event } from "./dcr";
 import { parser } from "./dcr_parser"
 
 class Simulation {
@@ -6,9 +6,9 @@ class Simulation {
     isRunning: boolean = false;
     id: number;
     log: any;
-    users: any[];
-    startTime: Date;
-    stopTime: Date;
+    users: User[];
+    startTime: Date | undefined;
+    stopTime: Date | undefined;
 
     constructor(input: string) {
         this.graph = parser.parse(input);
@@ -16,7 +16,7 @@ class Simulation {
         this.id = 1;
     }
 
-    executeEvent(event: any) {
+    executeEvent(event: Event) {
         this.graph.execute(event)
     }
 
@@ -30,11 +30,9 @@ class Simulation {
         this.stopTime = new Date();
     }
 
-    addUsers(user: any) {
+    addUsers(user: User) {
         this.users.push(user);
     }
-
-
 
     hello() {
         if (this.isRunning) {
@@ -43,9 +41,24 @@ class Simulation {
             console.log("Hello, i AM running :)");
         }
     }
-
-
 }
+
+class User {
+    id: number;
+    name: string;
+    roles: any[] | undefined;
+    constructor(id:number, name: string) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+
+
+
+
+
+
 
 var a = new Simulation((`A(0,0,0)      
 B(0,1,1)        

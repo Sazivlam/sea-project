@@ -19,7 +19,7 @@ class Marking {
     }
 }
 
-class Event{
+export class Event{
 
     constructor(n, l, p, g = new DCRGraph()) {      
         this.children = g;                
