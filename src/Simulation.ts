@@ -1,6 +1,6 @@
 import { DCRGraph, Event } from "./dcr";
-import { parser } from "./dcr_parser"
-
+import { parser } from "./dcr_parser";
+import { User } from "./User";
 class Simulation {
     graph: DCRGraph;
     isRunning: boolean = false;
@@ -36,31 +36,17 @@ class Simulation {
 
     hello() {
         if (this.isRunning) {
-            console.log("Hello, i am NOT running :(");
-        } else {
             console.log("Hello, i AM running :)");
+        } else {
+            console.log("Hello, i am NOT running :(");
         }
     }
 }
 
-class User {
-    id: number;
-    name: string;
-    roles: any[] | undefined;
-    constructor(id:number, name: string) {
-        this.id = id;
-        this.name = name;
-    }
-}
 
 
 
-
-
-
-
-
-var a = new Simulation((`A(0,0,0)      
+var sim = new Simulation((`A(0,0,0)      
 B(0,1,1)        
 A -->* B
 B *--> A
@@ -69,4 +55,8 @@ D -->+ A
 D -->* B
 A --><> (B, D)`));
 
-a.hello()
+sim.hello()
+sim.startSimulation();
+sim.hello()
+sim.stopSimulation();
+sim.hello();
