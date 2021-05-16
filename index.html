@@ -10,10 +10,12 @@
 <body>  
   <script src="js/lodash.js"></script>  
   <script src="js/jQuery.js"></script>
+  <script src="js/peerjs.min.js"></script>
   <script src="js/dynamic_table.js"></script>
   <script src="js/dcr.js"></script>
   <script src="js/dcr_parser.js"></script>  
   <script src="js/GUI.js"></script>  
+  <script src="js/communication.js"></script>
 
   <table id="task-table"></table>  
   <p id="accepting"></p>
@@ -21,6 +23,16 @@
   
   <p id="iter"></p>
   <br />
+
+  <div id=conn-block>
+    <div id=conn-text>Enter server ID or wait for client to connect</div>
+    <input id=partner-id>
+    <button id="btn-conn">Connect</button>
+  </div>
+  <div id=conn-status></div>
+  <div id=my-id></div>
+  <div id=server-id></div>
+  <div id=conn-list></div>
 
   <button id="btn-time">Time+1</button>&nbsp;
   <br />

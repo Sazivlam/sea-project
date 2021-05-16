@@ -44,7 +44,21 @@ function startSim() {
         setTimeout(startSim, 2000);
 
     }   
-}       
+}      
+
+function handleTextAreaChange(updateOther = false) {
+    var x = document.getElementById("ta-dcr");
+        try{
+            graph1 = parser.parse(x.value);        
+            fillDcrTable(graph1.status());
+            document.getElementById("parse-error").innerHTML = "";
+            updateOther ? updateOthers() : ''
+        }
+        catch(err)
+        {
+            document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
+        }
+}
 
 $(document).ready(function(e) {    
     taskTable = dynamicTable.config('task-table', 
@@ -66,19 +80,14 @@ $(document).ready(function(e) {
 
     $('#btn-stop-sim').click(function(e) {
         isRunning = false;
+    });
+    
+    $('#btn-conn').click(function(e) {
+        connect();
     }); 
 
     $('#ta-dcr').keyup(function(e) {
-        var x = document.getElementById("ta-dcr");
-        try{
-            graph1 = parser.parse(x.value);        
-            fillDcrTable(graph1.status());
-            document.getElementById("parse-error").innerHTML = "";
-        }
-        catch(err)
-        {
-            document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
-        }
+        handleTextAreaChange(true)
     });         
     
     try{
