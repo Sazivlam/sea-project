@@ -14,11 +14,12 @@ class Simulation {
         this.graph = parser.parse(input);
         this.users = [];
         this.id = 1;
-        this.log = []
+        this.log = [];
     }
 
     executeEvent(event: Event) {
         this.graph.execute(event)
+        this.log.push(event);
     }
 
     startSimulation() {
@@ -33,6 +34,10 @@ class Simulation {
 
     addUsers(user: User) {
         this.users.push(user);
+    }
+
+    saveLog(){
+        console.log(this.log);
     }
 
     hello() {
