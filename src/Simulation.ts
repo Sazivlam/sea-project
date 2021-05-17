@@ -14,6 +14,7 @@ class Simulation {
         this.graph = parser.parse(input);
         this.users = [];
         this.id = 1;
+        this.log = []
     }
 
     executeEvent(event: Event) {
