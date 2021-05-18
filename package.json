@@ -1,0 +1,28 @@
+{
+  "name": "sea-project",
+  "version": "1.0.0",
+  "description": "Hello guys! This a test commit. i hate javascript!  WHY?",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint -p ./src",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Johanpdrsn/sea-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Johanpdrsn/sea-project/issues"
+  },
+  "homepage": "https://github.com/Johanpdrsn/sea-project#readme",
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
+    "@typescript-eslint/parser": "^4.22.1",
+    "eslint": "^7.25.0"
+  }
+}
