@@ -2,19 +2,12 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "jquery":true,
-        "jest": true
+        "es2021": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module"
+        "ecmaVersion": 12
     },
     "rules": {
-    },
-    "overrides": [{
-        "files": ["*.ts", "*.tsx"],
-        "parser": "@typescript-eslint/parser",
-        "plugins": ["@typescript-eslint"]
-    }]  
+    }
 }
