@@ -1,19 +1,3 @@
-class LogEntry {
-    constructor() {
-    }
-
-
-    toString() {
-        return "(Stuff to file.)";
-    }
-
-    returnEntry() {
-        throw new exception();
-    }
-
-    
-}
-
 class Entry {
     constructor(id, username, eventName, timestamp, role, newValue) {
         this.Id = id;
@@ -32,6 +16,4 @@ class Entry {
     returnEntry() {
         throw new exception();
     }
-
-    
 }
