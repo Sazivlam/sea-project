@@ -1,8 +1,8 @@
-import { DCRGraph, Event } from "./dcr";
-import { parser } from "./dcr_parser";
 import { User } from "./User";
+const parser = require("./dcr_parser");
+
 class Simulation {
-    graph: DCRGraph;
+    graph: any;
     isRunning: boolean = false;
     id: number;
     log: any;

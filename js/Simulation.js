@@ -1,15 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const dcr_parser_1 = require("./dcr_parser");
+const parser = require("./dcr_parser");
 class Simulation {
     constructor(input) {
         this.isRunning = false;
-        this.graph = dcr_parser_1.parser.parse(input);
+        this.graph = parser.parse(input);
         this.users = [];
         this.id = 1;
+        this.log = [];
     }
     executeEvent(event) {
         this.graph.execute(event);
+        this.log.push(event);
     }
     startSimulation() {
         this.isRunning = true;
@@ -21,6 +23,9 @@ class Simulation {
     }
     addUsers(user) {
         this.users.push(user);
+    }
+    saveLog() {
+        console.log(this.log);
     }
     hello() {
         if (this.isRunning) {

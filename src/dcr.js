@@ -19,7 +19,7 @@ class Marking {
     }
 }
 
-export class Event{
+class Event{
 
     constructor(n, l, p, g = new DCRGraph()) {      
         this.children = g;                
@@ -140,7 +140,7 @@ export class Event{
 
 }
 
-export class DCRGraph {
+class DCRGraph {
     parent = undefined;
     parentGraphTemp = undefined;
     events = new Map();

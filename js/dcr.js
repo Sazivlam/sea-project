@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DCRGraph = exports.Event = void 0;
 /*
  Basic DCR Engine supporting:
  - Condition, response, include, exclude, milestone
@@ -107,7 +105,6 @@ class Event {
         return (!(this.marking.pending && this.marking.included));
     }
 }
-exports.Event = Event;
 class DCRGraph {
     constructor(pg) {
         this.parent = undefined;
@@ -305,4 +302,3 @@ class DCRGraph {
         return result;
     }
 }
-exports.DCRGraph = DCRGraph;
