@@ -92,7 +92,7 @@ $(document).ready(function(e) {
     
     try{
         var x = document.getElementById("ta-dcr");
-        graph1 = parser.parse(x.value);                
+        graph1 = new Simulation(x.value).graph;                
         fillDcrTable(graph1.status());
         document.getElementById("parse-error").innerHTML = "";
     }
