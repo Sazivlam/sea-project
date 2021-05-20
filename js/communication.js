@@ -4,6 +4,7 @@ app.peer = new Peer();
 var connected = false;
 var server = false;
 var client = false;
+const connCheckDelayTimeMs = 300;
 
 //Set my id
 app.peer.on('open', function (myId) {
@@ -14,21 +15,21 @@ app.peer.on('open', function (myId) {
 
 //Client part
 function connect() {
-    app.conn = app.peer.connect(document.getElementById('partner-id').value);
+    app.conn = app.peer.connect(document.getElementById('peer-input-id').value);
     //Connect to server
     app.conn.on('open', function () {
         if (!connected && !server) {
-            console.log("Outcoming open");
-            if (!connected) {
-                removeConnectionBlock();
-                client = true;
-            }
-            document.getElementById('conn-status').innerHTML = "Connection established as Client";
-            document.getElementById('server-id').innerHTML =
-                "<div>Server ID: </div>" +
-                "<div>" + app.conn.peer + "</div><br/>";
+            // console.log("Outcoming open");
             connections.push(app.conn);
-            connected = true;
+            //Only for the first connection
+            if (!connected) {
+                document.getElementById('conn-status').innerHTML = "Connection established as Client";
+                client = true;
+                connBlockStatus(false);
+                connected = true;
+                //Start async connection checker
+                connectionChecker();
+            }
         }
     });
     //Receive server data
@@ -47,23 +48,26 @@ app.peer.on('connection',
         app.conn = c;
         //New client connects
         app.conn.on('open', function (incomingPeerId) {
-            console.log("New client connects");
+            // console.log("New client connects");
             if (!client) {
-                console.log("Incoming open");
-                if (!connected) {
-                    removeConnectionBlock();
-                    server = true;
-                }
-                document.getElementById('conn-status').innerHTML = "Connection established as Server";
+                // console.log("Incoming open");
                 connections.push(c);
-                connected = true;
-                updateConnectionList();
+                //Only for the first connection
+                if (!connected) {
+                    document.getElementById('conn-status').innerHTML = "Connection established as Server";
+                    server = true;
+                    connBlockStatus(false);
+                    connected = true;
+                    //Start async connection checker
+                    connectionChecker();
+                }
+                updateOthers();
             }
         });
         //Receive client data
         app.conn.on('data', function (data) {
             if (connected && !client) {
-                console.log("Incoming data");
+                // console.log("Incoming data");
                 document.getElementById('ta-dcr').value = data;
                 handleTextAreaChange();
                 //Update all clients
@@ -82,16 +86,60 @@ function updateOthers() {
     });
 
 }
-function removeConnectionBlock() {
-    document.getElementById('conn-block').remove();
+function connBlockStatus(status) {
+    if (status) {
+        //When every connection is lost
+        document.getElementById('conn-status').style.display = "none";
+        document.getElementById('peer-input-block').style.display = "block";
+        document.getElementById('conn-list').style.display = "none";
+        document.getElementById('server-id').style.display = "none";
+    } else {
+        //When first connection established
+        document.getElementById('conn-status').style.display = "block";
+        document.getElementById('peer-input-block').style.display = "none";
+        if (server) {
+            document.getElementById('conn-list').style.display = "block";
+        } else {
+            document.getElementById('server-id').style.display = "block";
+        }
+    }
 }
 function updateConnectionList() {
     var connectionListString = [];
-    connectionListString.push("<div>Clients:</div>")
-    connections.forEach(c => {
-        if (c && c.open) {
+    if (server) {
+        connectionListString.push("<div>Clients:</div>")
+        connections.forEach(c => {
             connectionListString.push("<div>" + c.peer + "</div>")
+        })
+        document.getElementById('conn-list').innerHTML = connectionListString.join('') + "<br/>";
+    } else {
+        connectionListString.push("<div>Server ID: </div>")
+        connections.forEach(c => {
+            connectionListString.push("<div>" + c.peer + "</div>")
+        })
+        document.getElementById('server-id').innerHTML = connectionListString.join('') + "<br/>";
+    }
+}
+
+async function connectionChecker() {
+    // console.log("check");
+    if (connections.length == 0) {
+        connected = false;
+        server = false;
+        client = false;
+        connBlockStatus(true);
+    } else {
+        var newConnections = [];
+        connections.forEach(c => {
+            if (c && c.open) {
+                newConnections.push(c);
+            }
+        });
+        connections = newConnections;
+        updateConnectionList();
+        //Run again only if there are active connections
+        if (connected) {
+            setTimeout(connectionChecker, connCheckDelayTimeMs);
         }
-    })
-    document.getElementById('conn-list').innerHTML = connectionListString.join('') + "<br/>";
+    }
 }
