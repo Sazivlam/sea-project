@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>JavaScript DCR Graphs Engine</title>
@@ -7,35 +8,36 @@
   <meta name="author" content="Tijs Slaats">
   <link rel="stylesheet" href="css/styles.css?v=1.0">
 </head>
-<body>  
+
+<body>
   <script src="js/Log/LogObject.js"></script>
   <script src="js/Log/LogEntry.js"></script>
-  <script src="js/lodash.js"></script>  
+  <script src="js/lodash.js"></script>
   <script src="js/jQuery.js"></script>
   <script src="js/peerjs.min.js"></script>
   <script src="js/dynamic_table.js"></script>
   <script src="js/dcr.js"></script>
-  <script src="js/dcr_parser.js"></script>  
-  <script src="js/GUI.js"></script>  
+  <script src="js/dcr_parser.js"></script>
+  <script src="js/GUI.js"></script>
   <script src="js/communication.js"></script>
   <script src="js/Simulation.js"></script>
 
-  <table id="task-table"></table>  
+  <table id="task-table"></table>
   <p id="accepting"></p>
   <br />
-  
+
   <p id="iter"></p>
   <br />
 
-  <div id=conn-block>
-    <div id=conn-text>Enter server ID or wait for client to connect</div>
-    <input id=partner-id>
+  <div id="peer-input-block">
+    <div id="peer-input-text">Enter server ID or wait for client to connect</div>
+    <input id="peer-input-id">
     <button id="btn-conn">Connect</button>
   </div>
-  <div id=conn-status></div>
-  <div id=my-id></div>
-  <div id=server-id></div>
-  <div id=conn-list></div>
+  <div id="my-id"></div>
+  <div id="conn-status"></div>
+  <div id="server-id"></div>
+  <div id="conn-list"></div>
 
   <button id="btn-time">Time+1</button>&nbsp;
   <br />
@@ -59,4 +61,5 @@ A --><> (B, D)
   <p id="parse-error"></p>
 
 </body>
+
 </html>
