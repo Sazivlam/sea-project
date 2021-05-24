@@ -9,7 +9,7 @@ function fillDcrTable(status) {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
         row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
         row.included = (row.included ? "" : "%");       
-        row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label + "</button>";
+        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' "  +" onclick=\"handleEventButtonClick(this.id, true);\">" + row.label + "</button>";
     }
     taskTable.load(status);
     updateAccepting(graph1.isAccepting());
@@ -52,12 +52,24 @@ function handleTextAreaChange(updateOther = false) {
             graph1 = parser.parse(x.value);        
             fillDcrTable(graph1.status());
             document.getElementById("parse-error").innerHTML = "";
-            updateOther ? updateOthers() : ''
+            updateOther ? updateOthers({
+                type: 'textField',
+                id: 'ta-dcr',
+                data: document.getElementById('ta-dcr').value
+            }) : ''
         }
         catch(err)
         {
             document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
         }
+}
+
+function handleEventButtonClick(buttondId, updateOther = false) {
+    graph1.execute(buttondId);
+    fillDcrTable(graph1.status());
+    if(updateOther) {
+        updateOthers({type: 'button', id: buttondId})
+    }
 }
 
 $(document).ready(function(e) {    
