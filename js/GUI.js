@@ -4,15 +4,28 @@ var numIter = 0;
 var iterations = [];
 
 function fillDcrTable(status) {
-    for (var row of status)
-    {
-        row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
-        row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
-        row.included = (row.included ? "" : "%");       
-        row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label + "</button>";
+    if (sim.isRunning){
+        for (var row of status)
+        {
+            row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
+            row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
+            row.included = (row.included ? "" : "%");       
+            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label + "</button>";
+        }
+        taskTable.load(status);
+        updateAccepting(graph1.isAccepting());
+    } else {
+        for (var row of status)
+        {
+            row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
+            row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
+            row.included = (row.included ? "" : "%");       
+            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"fillDcrTable(graph1.status());\">" + row.label + "</button>";
+        }
+        taskTable.load(status);
+        updateAccepting(graph1.isAccepting());
     }
-    taskTable.load(status);
-    updateAccepting(graph1.isAccepting());
+
 }
 
 function updateAccepting(status) {
@@ -49,7 +62,8 @@ function startSim() {
 function handleTextAreaChange(updateOther = false) {
     var x = document.getElementById("ta-dcr");
         try{
-            graph1 = parser.parse(x.value);        
+            sim = new Simulation(x.value)
+            graph1 = sim.graph;        
             fillDcrTable(graph1.status());
             document.getElementById("parse-error").innerHTML = "";
             updateOther ? updateOthers() : ''
@@ -81,6 +95,15 @@ $(document).ready(function(e) {
     $('#btn-stop-sim').click(function(e) {
         isRunning = false;
     });
+
+    $('#btn-start-manual-sim').click(function(e) {
+        sim.startSimulation()
+        fillDcrTable(graph1.status())
+    }); 
+    $('#btn-stop-manual-sim').click(function(e) {
+        sim.stopSimulation()
+        fillDcrTable(graph1.status())
+    }); 
     
     $('#btn-conn').click(function(e) {
         connect();
@@ -92,7 +115,9 @@ $(document).ready(function(e) {
     
     try{
         var x = document.getElementById("ta-dcr");
-        graph1 = new Simulation(x.value).graph;                
+        sim = new Simulation(x.value)
+
+        graph1 = sim.graph;                
         fillDcrTable(graph1.status());
         document.getElementById("parse-error").innerHTML = "";
     }
@@ -100,5 +125,7 @@ $(document).ready(function(e) {
     {
         document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
     }
+
+
 
 });
