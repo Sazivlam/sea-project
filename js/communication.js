@@ -11,7 +11,11 @@ app.peer.on('open', function (myId) {
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div>" + myId + "</div><br/>";
+        localStorage.setItem("myID", myId); 
+        
 });
+
+
 
 //Client part
 function connect() {

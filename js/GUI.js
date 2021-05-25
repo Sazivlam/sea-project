@@ -3,13 +3,15 @@ var isRunning = false;
 var numIter = 0;
 var iterations = [];
 
+
+
 function fillDcrTable(status) {
     for (var row of status)
     {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
         row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
         row.included = (row.included ? "" : "%");       
-        row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label + "</button>";
+        row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label +  "</button>";
     }
     taskTable.load(status);
     updateAccepting(graph1.isAccepting());
@@ -30,10 +32,12 @@ function startSim() {
                 names.push(row.name);
             }
         }
-
+         
         chosenEvent = _.sample(names)
-
-        iterations.push("Iteration: " + numIter + "; Executed Event: " + chosenEvent + "<br />")
+        var today = new Date();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var myIDD = localStorage.getItem("myID");  
+        iterations.push("Time : " + time +  ", User ID :" + myIDD +  " , Executed Event: " + chosenEvent +  "<br />")
 
         document.getElementById("iter").innerHTML = iterations.join("");
 
@@ -44,7 +48,37 @@ function startSim() {
         setTimeout(startSim, 2000);
 
     }   
-}      
+}
+
+function do1Sim (){
+    if (isRunning){
+        
+        
+        var names = [];
+        for (var row of graph1.status())
+        {
+            if (row.enabled){
+                names.push(row.name);
+            }
+        }
+         
+        chosenEvent = _.sample(names)
+        var today = new Date();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var myIDD = localStorage.getItem("myID");  
+        iterations.push("Time : " + time +  ", User ID :" + myIDD +  " , Executed Event: " + chosenEvent +  "<br />")
+
+        document.getElementById("iter").innerHTML = iterations.join("");
+
+        graph1.timeStep(1);
+        graph1.execute(chosenEvent);
+        fillDcrTable(graph1.status());
+
+        
+
+    } 
+
+}
 
 function handleTextAreaChange(updateOther = false) {
     var x = document.getElementById("ta-dcr");
