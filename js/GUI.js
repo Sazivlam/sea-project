@@ -10,20 +10,20 @@ function fillDcrTable(status) {
             row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
             row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
             row.included = (row.included ? "" : "%");       
-            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label + "</button>";
+            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"sim.executeEvent('" + row.name + "');fillDcrTable(sim.graph.status());\">" + row.label + "</button>";
         }
         taskTable.load(status);
-        updateAccepting(graph1.isAccepting());
+        updateAccepting(sim.graph.isAccepting());
     } else {
         for (var row of status)
         {
             row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
             row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
             row.included = (row.included ? "" : "%");       
-            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"fillDcrTable(graph1.status());\">" + row.label + "</button>";
+            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"fillDcrTable(sim.graph.status());\">" + row.label + "</button>";
         }
         taskTable.load(status);
-        updateAccepting(graph1.isAccepting());
+        updateAccepting(sim.graph.isAccepting());
     }
 
 }
@@ -37,7 +37,7 @@ function startSim() {
         numIter ++;
         
         var names = [];
-        for (var row of graph1.status())
+        for (var row of sim.graph.status())
         {
             if (row.enabled){
                 names.push(row.name);
@@ -50,9 +50,9 @@ function startSim() {
 
         document.getElementById("iter").innerHTML = iterations.join("");
 
-        graph1.timeStep(1);
-        graph1.execute(chosenEvent);
-        fillDcrTable(graph1.status());
+        sim.graph.timeStep(1);
+        sim.executeEvent(chosenEvent);
+        fillDcrTable(sim.graph.status());
 
         setTimeout(startSim, 2000);
 
@@ -63,8 +63,7 @@ function handleTextAreaChange(updateOther = false) {
     var x = document.getElementById("ta-dcr");
         try{
             sim = new Simulation(x.value)
-            graph1 = sim.graph;        
-            fillDcrTable(graph1.status());
+            fillDcrTable(sim.graph.status());
             document.getElementById("parse-error").innerHTML = "";
             updateOther ? updateOthers() : ''
         }
@@ -81,8 +80,8 @@ $(document).ready(function(e) {
     'There are no items to list...'); 
 
     $('#btn-time').click(function(e) {
-        graph1.timeStep(1);
-        fillDcrTable(graph1.status());
+        sim.graph.timeStep(1);
+        fillDcrTable(sim.graph.status());
     });    
     
     $('#btn-start-sim').click(function(e) {
@@ -98,11 +97,11 @@ $(document).ready(function(e) {
 
     $('#btn-start-manual-sim').click(function(e) {
         sim.startSimulation()
-        fillDcrTable(graph1.status())
+        fillDcrTable(sim.graph.status())
     }); 
     $('#btn-stop-manual-sim').click(function(e) {
         sim.stopSimulation()
-        fillDcrTable(graph1.status())
+        fillDcrTable(sim.graph.status())
     }); 
     
     $('#btn-conn').click(function(e) {
@@ -117,8 +116,7 @@ $(document).ready(function(e) {
         var x = document.getElementById("ta-dcr");
         sim = new Simulation(x.value)
 
-        graph1 = sim.graph;                
-        fillDcrTable(graph1.status());
+        fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
     }
     catch(err)
