@@ -111,8 +111,10 @@ function executeUpdateEvent(data, updateOthers = false){
     if (data.type == 'textField') {
         document.getElementById(data.id).value = data.data;
         handleTextAreaChange(updateOthers);
-    } else if (data.type == 'button') {
+    } else if (data.type == 'eventButton') {
         handleEventButtonClick(data.id, updateOthers);
+    } else if (data.type == 'manualSimButton') {
+        handleManualSimButtonClick(data.id, updateOthers)
     }
 }
 

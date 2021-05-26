@@ -83,11 +83,16 @@ function handleEventButtonClick(buttondId, updateOther = false) {
     fillDcrTable(sim.graph.status());
 }
 
-function handleStartManualSimButtonClick(updateOther = false) {
-    sim.startSimulation()
+function handleManualSimButtonClick(buttonID, updateOther = false) {
+    if(buttonID == 'btn-start-manual-sim'){
+        sim.startSimulation()
+    } else if(buttonID == 'btn-stop-manual-sim') {
+        sim.stopSimulation()
+    }
     fillDcrTable(sim.graph.status())
+
     if(updateOther){
-        updateOthers({ type: 'startSimButton', id: 'btn-start-manual-sim' })
+        updateOthers({ type: 'manualSimButton', id: buttonID })
     }
 }
 
@@ -114,11 +119,10 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-manual-sim').click(function (e) {
-        handleStartManualSimButtonClick(true);
+        handleManualSimButtonClick(this.id, true);
     });
     $('#btn-stop-manual-sim').click(function (e) {
-        sim.stopSimulation()
-        fillDcrTable(sim.graph.status())
+        handleManualSimButtonClick(this.id, true);
     });
 
     $('#btn-conn').click(function (e) {
