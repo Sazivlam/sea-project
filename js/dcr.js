@@ -16,7 +16,7 @@ class Marking {
         this.value;
     }
     toString() {
-        return "(" + (executed ? 1 : 0) + "," + (included ? 1 : 0) + "," + (pending ? 1 : 0) + ")";
+        return "(" + (this.executed ? 1 : 0) + "," + (this.included ? 1 : 0) + "," + (this.pending ? 1 : 0) + ")";
     }
 }
 class Event {

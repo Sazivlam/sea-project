@@ -9,5 +9,8 @@
         "ecmaVersion": 12
     },
     "rules": {
+        "no-undef": "off",
+        "no-redeclare": "off",
+        "no-unused-vars": "warn"
     }
 }
