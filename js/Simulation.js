@@ -18,12 +18,12 @@ class Simulation {
 
     startSimulation() {
         this.isRunning = true;
-        this.startTime = new Date();
+        this.startTime = new Date().toLocaleString();
     }
 
     stopSimulation() {
         this.isRunning = false;
-        this.stopTime = new Date();
+        this.stopTime = new Date().toLocaleString();
     }
 
     addUsers(user) {
