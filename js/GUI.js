@@ -4,26 +4,14 @@ var numIter = 0;
 var iterations = [];
 
 function fillDcrTable(status) {
-    if (sim.isRunning) {
-        for (var row of status) {
-            row.executed = (row.executed ? "V:" + row.lastExecuted : "");
-            row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
-            row.included = (row.included ? "" : "%");
-            row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' "  +" onclick=\"handleEventButtonClick(this.id, true);\">" + row.label + "</button>";
-        }
-        taskTable.load(status);
-        updateAccepting(sim.graph.isAccepting());
-    } else {
-        for (var row of status) {
-            row.executed = (row.executed ? "V:" + row.lastExecuted : "");
-            row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
-            row.included = (row.included ? "" : "%");
-            row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' "  +" onclick=\"handleEventButtonClick(this.id, true);\">" + row.label + "</button>";
-        }
-        taskTable.load(status);
-        updateAccepting(sim.graph.isAccepting());
+    for (var row of status) {
+        row.executed = (row.executed ? "V:" + row.lastExecuted : "");
+        row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
+        row.included = (row.included ? "" : "%");
+        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + " onclick=\"handleEventButtonClick(this.id, true);\">" + row.label + "</button>";
     }
-
+    taskTable.load(status);
+    updateAccepting(sim.graph.isAccepting());
 }
 
 function updateAccepting(status) {
@@ -84,14 +72,14 @@ function handleEventButtonClick(buttondId, updateOther = false) {
 }
 
 function handleManualSimButtonClick(buttonID, updateOther = false) {
-    if(buttonID == 'btn-start-manual-sim'){
+    if (buttonID == 'btn-start-manual-sim') {
         sim.startSimulation()
-    } else if(buttonID == 'btn-stop-manual-sim') {
+    } else if (buttonID == 'btn-stop-manual-sim') {
         sim.stopSimulation()
     }
     fillDcrTable(sim.graph.status())
 
-    if(updateOther){
+    if (updateOther) {
         updateOthers({ type: 'manualSimButton', id: buttonID })
     }
 }
