@@ -16,8 +16,7 @@ class Simulation {
 
     executeEvent(event, userName) {
         this.graph.execute(event)
-        this.log.executeEvent(userName, event, new Date().toLocaleString(), "test", "undefined")
-        console.log(this.log.Entries)
+        this.log.logEvent(userName, event, new Date().toLocaleString(), "test", "undefined")
     }
 
     startSimulation() {
@@ -28,6 +27,7 @@ class Simulation {
     stopSimulation() {
         this.isRunning = false;
         this.stopTime = new Date().toLocaleString();
+        this.log.saveLog()
     }
 
     addUsers(user) {
