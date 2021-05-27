@@ -50,7 +50,7 @@ function handleTextAreaChange(updateOther = false) {
         sim.changeGraph(x.value);
         fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
-        if(updateOther) {
+        if (updateOther) {
             updateOthers({
                 type: 'textField',
                 id: 'ta-dcr',
@@ -121,6 +121,11 @@ $(document).ready(function (e) {
     $('#btn-stop-manual-sim').click(function (e) {
         handleManualSimButtonClick(this.id, true);
     });
+
+    $('#btn-download-model').click(function (e) {
+        var content = document.getElementById("ta-dcr").value;
+        download(content, 'model.txt', 'text/csv;encoding:utf-8');
+    })
 
     $('#btn-conn').click(function (e) {
         connect();
