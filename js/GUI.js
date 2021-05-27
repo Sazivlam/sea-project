@@ -152,8 +152,6 @@ $(document).ready(function (e) {
         'There are no items to list...');
 
     $('#btn-time').click(function (e) {
-        console.log(sim.users)
-        console.log(connections)
         sim.graph.timeStep(1);
         fillDcrTable(sim.graph.status());
     });
