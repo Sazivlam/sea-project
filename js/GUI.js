@@ -69,7 +69,8 @@ function handleTextAreaChange(updateOther = false) {
 
 function handleEventButtonClick(buttondId, updateOther = false) {
     if (sim.isRunning) {
-        sim.executeEvent(buttondId);
+        clientId = document.getElementById("id_num").innerHTML
+        sim.executeEvent(buttondId, clientId);
         if (updateOther) {
             updateOthers({ type: 'eventButton', id: buttondId })
         }
