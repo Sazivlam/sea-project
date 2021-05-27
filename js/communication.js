@@ -1,7 +1,7 @@
 var app = {};
 var connections = [];
 // Need to know initial state to which apply all the following updates
-var initialState = {type: 'textField', id: 'ta-dcr', data: "A(0,0,0)        \nB(0,1,1)        \nA -->* B\nB *--> A\nC -->% A\nD -->+ A    \nD -->* B\nA --><> (B, D)    \n  "}
+var initialState = { type: 'textField', id: 'ta-dcr', data: "A(0,0,0)        \nB(0,1,1)        \nA -->* B\nB *--> A\nC -->% A\nD -->+ A    \nD -->* B\nA --><> (B, D)    \n  " }
 var updates = [initialState];
 app.peer = new Peer();
 
@@ -17,12 +17,15 @@ var connected = false;
 var server = false;
 var client = false;
 const connCheckDelayTimeMs = 300;
+var myId = null;
 
 //Set my id
-app.peer.on('open', function (myId) {
+app.peer.on('open', function (id) {
+    myId = id;
+    handleNewUser(myId, true)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
-        "<div>" + myId + "</div><br/>";
+        "<div>" + id + "</div><br/>";
 });
 
 //Client part
@@ -33,6 +36,7 @@ function connect() {
         if (!connected && !server) {
             // console.log("Client: New Connection");
             connections.push(app.conn);
+            handleNewUser(app.conn.peer, false)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
@@ -65,6 +69,7 @@ app.peer.on('connection',
             if (!client) {
                 // console.log("Server: New Connection");
                 connections.push(c);
+                handleNewUser(c.peer, true)
                 //Only for the first connection
                 if (!connected) {
                     document.getElementById('conn-status').innerHTML = "Connection established as Server";
@@ -100,14 +105,14 @@ function updateOthers(stateUpdate) {
     updates.push(stateUpdate);
 
     if (connections.length > 0) {
-        // console.log("Update sent")
         connections.forEach(c => {
+            // console.log("Update sent")
             if (c && c.open) c.send(stateUpdate);
         });
     }
 }
 
-function executeUpdateEvent(data, updateOthers = false){
+function executeUpdateEvent(data, updateOthers = false) {
     if (data.type == 'textField') {
         document.getElementById(data.id).value = data.data;
         handleTextAreaChange(updateOthers);
@@ -115,6 +120,11 @@ function executeUpdateEvent(data, updateOthers = false){
         handleEventButtonClick(data.id, updateOthers);
     } else if (data.type == 'manualSimButton') {
         handleManualSimButtonClick(data.id, updateOthers)
+    } else if (data.type == 'newUser') {
+        //Add only if not in array
+        if (!sim.users.some(user => user.id === data.id)) {
+            sim.addUsers(new User(data.id));
+        }
     }
 }
 

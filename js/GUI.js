@@ -47,14 +47,16 @@ function startSim() {
 function handleTextAreaChange(updateOther = false) {
     var x = document.getElementById("ta-dcr");
     try {
-        sim = new Simulation(x.value)
+        sim.changeGraph(x.value);
         fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
-        updateOther ? updateOthers({
-            type: 'textField',
-            id: 'ta-dcr',
-            data: document.getElementById('ta-dcr').value
-        }) : ''
+        if(updateOther) {
+            updateOthers({
+                type: 'textField',
+                id: 'ta-dcr',
+                data: document.getElementById('ta-dcr').value
+            })
+        }
     }
     catch (err) {
         document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
@@ -69,6 +71,13 @@ function handleEventButtonClick(buttondId, updateOther = false) {
         }
     }
     fillDcrTable(sim.graph.status());
+}
+
+function handleNewUser(userId, updateOther = false) {
+    sim.addUsers(new User(userId));
+    if (updateOther) {
+        updateOthers({ type: 'newUser', id: userId })
+    }
 }
 
 function handleManualSimButtonClick(buttonID, updateOther = false) {
