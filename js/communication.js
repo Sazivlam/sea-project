@@ -1,18 +1,37 @@
 var app = {};
 var connections = [];
+// Need to know initial state to which apply all the following updates
+var initialState = { type: 'textField', id: 'ta-dcr', data: "A(0,0,0)        \nB(0,1,1)        \nA -->* B\nB *--> A\nC -->% A\nD -->+ A    \nD -->* B\nA --><> (B, D)    \n  " }
+var updates = [initialState];
 app.peer = new Peer();
+
+// When peerjs server is down, you can use your own!
+// https://github.com/peers/peerjs-server#run-server
+
+// app.peer = new Peer(undefined, {
+//     host: 'localhost',
+//     port: 9000,
+//     path: '/myapp'
+// });
 var connected = false;
 var server = false;
 var client = false;
 const connCheckDelayTimeMs = 300;
+var myId = null;
 
 //Set my id
-app.peer.on('open', function (myId) {
+app.peer.on('open', function (id) {
+    myId = id;
+    handleNewUser(myId, true)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
+<<<<<<< HEAD
         "<div>" + myId + "</div><br/>";
         localStorage.setItem("myID", myId); 
         
+=======
+        "<div>" + id + "</div><br/>";
+>>>>>>> 815d79c892ef54df413edf8b1e8c5fa8fc4c990c
 });
 
 
@@ -23,8 +42,9 @@ function connect() {
     //Connect to server
     app.conn.on('open', function () {
         if (!connected && !server) {
-            // console.log("Outcoming open");
+            // console.log("Client: New Connection");
             connections.push(app.conn);
+            handleNewUser(app.conn.peer, false)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
@@ -39,9 +59,10 @@ function connect() {
     //Receive server data
     app.conn.on('data', function (data) {
         if (connected && !server) {
-            console.log("Outcoming data");
-            document.getElementById('ta-dcr').value = data;
-            handleTextAreaChange();
+            // console.log("Client: Received server data");
+            updates.push(data);
+            //Execute update but DO NOT update others
+            executeUpdateEvent(data, false)
         }
     });
 }
@@ -54,8 +75,9 @@ app.peer.on('connection',
         app.conn.on('open', function (incomingPeerId) {
             // console.log("New client connects");
             if (!client) {
-                // console.log("Incoming open");
+                // console.log("Server: New Connection");
                 connections.push(c);
+                handleNewUser(c.peer, true)
                 //Only for the first connection
                 if (!connected) {
                     document.getElementById('conn-status').innerHTML = "Connection established as Server";
@@ -65,31 +87,55 @@ app.peer.on('connection',
                     //Start async connection checker
                     connectionChecker();
                 }
-                updateOthers();
+                //Get the client up to date (make him apply all the changes we had)
+                sendUpdates(c);
             }
         });
         //Receive client data
         app.conn.on('data', function (data) {
             if (connected && !client) {
-                // console.log("Incoming data");
-                document.getElementById('ta-dcr').value = data;
-                handleTextAreaChange();
-                //Update all clients
-                if (server) {
-                    updateOthers();
-                }
+                // console.log("Server: Received client data");
+                updates.push(data);
+                //Execute update AND update others
+                executeUpdateEvent(data, true);
             }
         });
     });
 
-function updateOthers() {
-    console.log("send message")
-    var newmes = document.getElementById('ta-dcr').value;
-    connections.forEach(c => {
-        if (c && c.open) c.send(newmes);
-    });
-
+function sendUpdates(c) {
+    updates.forEach(event => {
+        if (c && c.open) c.send(event);
+    })
 }
+
+function updateOthers(stateUpdate) {
+    //Push update to updates list
+    updates.push(stateUpdate);
+
+    if (connections.length > 0) {
+        connections.forEach(c => {
+            // console.log("Update sent")
+            if (c && c.open) c.send(stateUpdate);
+        });
+    }
+}
+
+function executeUpdateEvent(data, updateOthers = false) {
+    if (data.type == 'textField') {
+        document.getElementById(data.id).value = data.data;
+        handleTextAreaChange(updateOthers);
+    } else if (data.type == 'eventButton') {
+        handleEventButtonClick(data.id, updateOthers);
+    } else if (data.type == 'manualSimButton') {
+        handleManualSimButtonClick(data.id, updateOthers)
+    } else if (data.type == 'newUser') {
+        //Add only if not in array
+        if (!sim.users.some(user => user.id === data.id)) {
+            sim.addUsers(new User(data.id));
+        }
+    }
+}
+
 function connBlockStatus(status) {
     if (status) {
         //When every connection is lost

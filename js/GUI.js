@@ -6,15 +6,23 @@ var iterations = [];
 
 
 function fillDcrTable(status) {
+<<<<<<< HEAD
     for (var row of status)
     {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
         row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
         row.included = (row.included ? "" : "%");       
         row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"graph1.execute('" + row.name + "');fillDcrTable(graph1.status());\">" + row.label +  "</button>";
+=======
+    for (var row of status) {
+        row.executed = (row.executed ? "V:" + row.lastExecuted : "");
+        row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
+        row.included = (row.included ? "" : "%");
+        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + " onclick=\"handleEventButtonClick(this.id, true);\">" + row.label + "</button>";
+>>>>>>> 815d79c892ef54df413edf8b1e8c5fa8fc4c990c
     }
     taskTable.load(status);
-    updateAccepting(graph1.isAccepting());
+    updateAccepting(sim.graph.isAccepting());
 }
 
 function updateAccepting(status) {
@@ -22,13 +30,12 @@ function updateAccepting(status) {
 }
 
 function startSim() {
-    if (isRunning){
-        numIter ++;
-        
+    if (isRunning) {
+        numIter++;
+
         var names = [];
-        for (var row of graph1.status())
-        {
-            if (row.enabled){
+        for (var row of sim.graph.status()) {
+            if (row.enabled) {
                 names.push(row.name);
             }
         }
@@ -41,12 +48,13 @@ function startSim() {
 
         document.getElementById("iter").innerHTML = iterations.join("");
 
-        graph1.timeStep(1);
-        graph1.execute(chosenEvent);
-        fillDcrTable(graph1.status());
+        sim.graph.timeStep(1);
+        sim.executeEvent(chosenEvent);
+        fillDcrTable(sim.graph.status());
 
         setTimeout(startSim, 2000);
 
+<<<<<<< HEAD
     }   
 }
 
@@ -78,61 +86,113 @@ function do1Sim (){
 
     } 
 
+=======
+    }
+>>>>>>> 815d79c892ef54df413edf8b1e8c5fa8fc4c990c
 }
 
 function handleTextAreaChange(updateOther = false) {
     var x = document.getElementById("ta-dcr");
-        try{
-            graph1 = parser.parse(x.value);        
-            fillDcrTable(graph1.status());
-            document.getElementById("parse-error").innerHTML = "";
-            updateOther ? updateOthers() : ''
+    try {
+        sim.changeGraph(x.value);
+        fillDcrTable(sim.graph.status());
+        document.getElementById("parse-error").innerHTML = "";
+        if (updateOther) {
+            updateOthers({
+                type: 'textField',
+                id: 'ta-dcr',
+                data: document.getElementById('ta-dcr').value
+            })
         }
-        catch(err)
-        {
-            document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
-        }
+    }
+    catch (err) {
+        document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
+    }
 }
 
-$(document).ready(function(e) {    
-    taskTable = dynamicTable.config('task-table', 
-    ['executed', 'included', 'pending', 'enabled', 'name'], 
-    ['Executed', 'Included', 'Pending', 'Enabled', 'Name'], 
-    'There are no items to list...'); 
+function handleEventButtonClick(buttondId, updateOther = false) {
+    if (sim.isRunning) {
+        sim.executeEvent(buttondId);
+        if (updateOther) {
+            updateOthers({ type: 'eventButton', id: buttondId })
+        }
+    }
+    fillDcrTable(sim.graph.status());
+}
 
-    $('#btn-time').click(function(e) {
-        graph1.timeStep(1);
-        fillDcrTable(graph1.status());
-    });    
-    
-    $('#btn-start-sim').click(function(e) {
+function handleNewUser(userId, updateOther = false) {
+    sim.addUsers(new User(userId));
+    if (updateOther) {
+        updateOthers({ type: 'newUser', id: userId })
+    }
+}
+
+function handleManualSimButtonClick(buttonID, updateOther = false) {
+    if (buttonID == 'btn-start-manual-sim') {
+        sim.startSimulation()
+    } else if (buttonID == 'btn-stop-manual-sim') {
+        sim.stopSimulation()
+    }
+    fillDcrTable(sim.graph.status())
+
+    if (updateOther) {
+        updateOthers({ type: 'manualSimButton', id: buttonID })
+    }
+}
+
+$(document).ready(function (e) {
+    taskTable = dynamicTable.config('task-table',
+        ['executed', 'included', 'pending', 'enabled', 'name'],
+        ['Executed', 'Included', 'Pending', 'Enabled', 'Name'],
+        'There are no items to list...');
+
+    $('#btn-time').click(function (e) {
+        sim.graph.timeStep(1);
+        fillDcrTable(sim.graph.status());
+    });
+
+    $('#btn-start-sim').click(function (e) {
         document.getElementById("iter").innerHTML = "";
         isRunning = true;
         numIter = 0;
         startSim();
-    }); 
+    });
 
-    $('#btn-stop-sim').click(function(e) {
+    $('#btn-stop-sim').click(function (e) {
         isRunning = false;
     });
-    
-    $('#btn-conn').click(function(e) {
-        connect();
-    }); 
 
-    $('#ta-dcr').keyup(function(e) {
+    $('#btn-start-manual-sim').click(function (e) {
+        handleManualSimButtonClick(this.id, true);
+    });
+    $('#btn-stop-manual-sim').click(function (e) {
+        handleManualSimButtonClick(this.id, true);
+    });
+
+    $('#btn-download-model').click(function (e) {
+        var content = document.getElementById("ta-dcr").value;
+        download(content, 'model.txt', 'text/csv;encoding:utf-8');
+    })
+
+    $('#btn-conn').click(function (e) {
+        connect();
+    });
+
+    $('#ta-dcr').keyup(function (e) {
         handleTextAreaChange(true)
-    });         
-    
-    try{
+    });
+
+    try {
         var x = document.getElementById("ta-dcr");
-        graph1 = new Simulation(x.value).graph;                
-        fillDcrTable(graph1.status());
+        sim = new Simulation(x.value)
+
+        fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
     }
-    catch(err)
-    {
+    catch (err) {
         document.getElementById("parse-error").innerHTML = err.message + "</br>" + JSON.stringify(err.location);
     }
+
+
 
 });
