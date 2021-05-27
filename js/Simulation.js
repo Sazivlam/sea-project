@@ -7,8 +7,11 @@ class Simulation {
         this.isRunning = false;
         this.startTime = undefined
         this.stopTime = undefined
-        this.users = []
         this.log = [];
+    }
+
+    changeGraph(input) {
+        this.graph = parser.parse(input);
     }
 
     executeEvent(event) {
