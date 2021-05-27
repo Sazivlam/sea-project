@@ -22,7 +22,7 @@ var myId = null;
 //Set my id
 app.peer.on('open', function (id) {
     myId = id;
-    handleNewUser(myId, true)
+    handleNewUser(myId, true, myId)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div>" + myId + "</div><br/>";
@@ -40,7 +40,7 @@ function connect() {
         if (!connected && !server) {
             // console.log("Client: New Connection");
             connections.push(app.conn);
-            handleNewUser(app.conn.peer, false)
+            handleNewUser(app.conn.peer, false, myId)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
@@ -93,7 +93,7 @@ app.peer.on('connection',
                 // console.log("Server: Received client data");
                 updates.push(data);
                 //Execute update AND update others
-                executeUpdateEvent(data, true);
+                executeUpdateEvent(data, true, app.conn.peer);
             }
         });
     });
@@ -104,26 +104,26 @@ function sendUpdates(c) {
     })
 }
 
-function updateOthers(stateUpdate) {
+function updateOthers(stateUpdate, excludeFromUpdate = null) {
     //Push update to updates list
     updates.push(stateUpdate);
 
     if (connections.length > 0) {
         connections.forEach(c => {
             // console.log("Update sent")
-            if (c && c.open) c.send(stateUpdate);
+            if (c && c.open && excludeFromUpdate != c.peer) c.send(stateUpdate);
         });
     }
 }
 
-function executeUpdateEvent(data, updateOthers = false) {
+function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null) {
     if (data.type == 'textField') {
         document.getElementById(data.id).value = data.data;
-        handleTextAreaChange(updateOthers);
+        handleTextAreaChange(updateOthers, excludeFromUpdate);
     } else if (data.type == 'eventButton') {
-        handleEventButtonClick(data.id, updateOthers);
+        handleEventButtonClick(data.id, updateOthers, excludeFromUpdate);
     } else if (data.type == 'manualSimButton') {
-        handleManualSimButtonClick(data.id, updateOthers)
+        handleManualSimButtonClick(data.id, updateOthers, excludeFromUpdate)
     } else if (data.type == 'newUser') {
         //Add only if not in array
         if (!sim.users.some(user => user.id === data.id)) {

@@ -10,7 +10,7 @@ function fillDcrTable(status) {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");
         row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
         row.included = (row.included ? "" : "%");
-        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + " onclick=\"handleEventButtonClick(this.id, true);\">" + row.label + "</button>";
+        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + " onclick=\"handleEventButtonClick(this.id, true, myId);\">" + row.label + "</button>";
     }
     taskTable.load(status);
     updateAccepting(sim.graph.isAccepting());
@@ -48,7 +48,7 @@ function startSim() {
     }
 }
 
-function handleTextAreaChange(updateOther = false) {
+function handleTextAreaChange(updateOther = false, excludeFromUpdate = null) {
     var x = document.getElementById("ta-dcr");
     try {
         sim.changeGraph(x.value);
@@ -59,7 +59,7 @@ function handleTextAreaChange(updateOther = false) {
                 type: 'textField',
                 id: 'ta-dcr',
                 data: document.getElementById('ta-dcr').value
-            })
+            }, excludeFromUpdate)
         }
     }
     catch (err) {
@@ -67,24 +67,24 @@ function handleTextAreaChange(updateOther = false) {
     }
 }
 
-function handleEventButtonClick(buttondId, updateOther = false) {
+function handleEventButtonClick(buttondId, updateOther = false, excludeFromUpdate = null) {
     if (sim.isRunning) {
         sim.executeEvent(buttondId);
         if (updateOther) {
-            updateOthers({ type: 'eventButton', id: buttondId })
+            updateOthers({ type: 'eventButton', id: buttondId }, excludeFromUpdate)
         }
     }
     fillDcrTable(sim.graph.status());
 }
 
-function handleNewUser(userId, updateOther = false) {
+function handleNewUser(userId, updateOther = false, excludeFromUpdate = null) {
     sim.addUsers(new User(userId));
     if (updateOther) {
-        updateOthers({ type: 'newUser', id: userId })
+        updateOthers({ type: 'newUser', id: userId }, excludeFromUpdate)
     }
 }
 
-function handleManualSimButtonClick(buttonID, updateOther = false) {
+function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == 'btn-start-manual-sim') {
         sim.startSimulation()
     } else if (buttonID == 'btn-stop-manual-sim') {
@@ -93,7 +93,7 @@ function handleManualSimButtonClick(buttonID, updateOther = false) {
     fillDcrTable(sim.graph.status())
 
     if (updateOther) {
-        updateOthers({ type: 'manualSimButton', id: buttonID })
+        updateOthers({ type: 'manualSimButton', id: buttonID }, excludeFromUpdate)
     }
 }
 
@@ -120,10 +120,10 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-manual-sim').click(function (e) {
-        handleManualSimButtonClick(this.id, true);
+        handleManualSimButtonClick(this.id, true, myId);
     });
     $('#btn-stop-manual-sim').click(function (e) {
-        handleManualSimButtonClick(this.id, true);
+        handleManualSimButtonClick(this.id, true, myId);
     });
 
     $('#btn-download-model').click(function (e) {
@@ -136,7 +136,7 @@ $(document).ready(function (e) {
     });
 
     $('#ta-dcr').keyup(function (e) {
-        handleTextAreaChange(true)
+        handleTextAreaChange(true, myId)
     });
 
     try {
