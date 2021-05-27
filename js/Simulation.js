@@ -14,9 +14,9 @@ class Simulation {
         this.graph = parser.parse(input);
     }
 
-    executeEvent(event) {
+    executeEvent(event, userName) {
         this.graph.execute(event)
-        this.log.push(event);
+        this.log.push(this.id, userName, event, new Date().toLocaleString);
     }
 
     startSimulation() {
