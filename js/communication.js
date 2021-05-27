@@ -27,7 +27,6 @@ app.peer.on('open', function (id) {
         "<div>My ID: </div>" +
         "<div>" + myId + "</div><br/>";
         localStorage.setItem("myID", myId); 
-        
 });
 
 
