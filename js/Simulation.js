@@ -49,9 +49,9 @@ class Simulation {
 
 
 class User {
-    constructor(id, name) {
+    constructor(id, name, roles) {
         this.id = id;
         this.name = name;
-        this.roles = []
+        this.roles = roles;
     }
 }

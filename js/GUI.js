@@ -73,10 +73,10 @@ function handleEventButtonClick(buttondId, updateOther = false) {
     fillDcrTable(sim.graph.status());
 }
 
-function handleNewUser(userId, updateOther = false) {
-    sim.addUsers(new User(userId));
+function handleNewUser(user, updateOther = false) {
+    sim.addUsers(user);
     if (updateOther) {
-        updateOthers({ type: 'newUser', id: userId })
+        updateOthers({ type: 'newUser', id: user })
     }
 }
 
@@ -93,6 +93,58 @@ function handleManualSimButtonClick(buttonID, updateOther = false) {
     }
 }
 
+function handleSubmitNameButton(name = null, id = null, updateOther = false) {
+    if(name.trim().length == 0){
+        document.getElementById("input-error").innerHTML = "Name must not be empty.</br>";
+    }else{
+        document.getElementById("input-error").innerHTML = "";
+        index = sim.users.findIndex((user => user.id == id));
+        sim.users[index].name = name
+
+        if (id === myId){
+            document.getElementById('name-input-block').style.display = "none";
+            document.getElementById('my-name').style.display = "block";
+            document.getElementById('my-name').innerHTML =
+            "<div>My Name: </div>" +
+            "<div>" + name + "</div><br/>";
+            document.getElementById('role-select-block').style.display = "block";
+        }
+        if (updateOther) {
+            updateOthers({ type: 'name', id: id, data: name })
+        }
+    }
+    
+}
+
+function handleRoleSubmitButton(robot, human, id = null, updateOther = false) {
+    if(!human && !robot){
+        document.getElementById("input-error").innerHTML = "At least one role must be selected.</br>";
+    }else{
+        document.getElementById("input-error").innerHTML = "";
+        index = sim.users.findIndex((user => user.id == id));
+
+        if(robot){
+            sim.users[index].roles.push("Robot");
+        }
+        if(human){
+            sim.users[index].roles.push("Human");
+        }
+
+        if (id === myId){
+            document.getElementById('role-select-block').style.display = "none";
+            document.getElementById('my-roles').style.display = "block";
+            document.getElementById('my-roles').innerHTML =
+            "<div>My Roles: </div>" +
+            "<div>" + sim.users[index].roles + "</div><br/>";
+        }
+
+        if (updateOther) {
+            updateOthers({ type: 'roles', id: id, data: sim.users[index].roles })
+        }
+    }
+    
+}
+
 $(document).ready(function (e) {
     taskTable = dynamicTable.config('task-table',
         ['executed', 'included', 'pending', 'enabled', 'name'],
@@ -100,6 +152,8 @@ $(document).ready(function (e) {
         'There are no items to list...');
 
     $('#btn-time').click(function (e) {
+        console.log(sim.users)
+        console.log(connections)
         sim.graph.timeStep(1);
         fillDcrTable(sim.graph.status());
     });
@@ -124,6 +178,17 @@ $(document).ready(function (e) {
 
     $('#btn-conn').click(function (e) {
         connect();
+    });
+
+    $('#btn-subname').click(function (e) {
+        var name = document.getElementById("name-input-id").value;
+        handleSubmitNameButton(name, myId, true);
+    });
+
+     $('#btn-role').click(function (e) {
+        var robot = document.getElementById("robot").checked;
+        var human = document.getElementById("human").checked;
+        handleRoleSubmitButton(robot, human, myId, true);
     });
 
     $('#ta-dcr').keyup(function (e) {
