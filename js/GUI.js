@@ -9,8 +9,9 @@ function fillDcrTable(status) {
         {
             row.executed = (row.executed ? "V:" + row.lastExecuted : "");            
             row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");            
-            row.included = (row.included ? "" : "%");       
-            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"sim.executeEvent('" + row.name + "');fillDcrTable(sim.graph.status());\">" + row.label + "</button>";
+            row.included = (row.included ? "" : "%");   
+            id = document.getElementById('id_num').innerHTML;
+            row.name = "<button " + (row.enabled ? "" : "disabled") + " onclick=\"sim.executeEvent('" + row.name + "','" + id + "');fillDcrTable(sim.graph.status());\">" + row.label + "</button>";
         }
         taskTable.load(status);
         updateAccepting(sim.graph.isAccepting());

@@ -11,9 +11,10 @@ class Simulation {
         this.log = [];
     }
 
-    executeEvent(event) {
-        this.graph.execute(event)
-        this.log.push(event);
+    executeEvent(event, userName) {
+        this.graph.execute(event);
+        this.log.push(this.id, userName, event, new Date().toLocaleString());
+        console.log(this.log)
     }
 
     startSimulation() {

@@ -10,7 +10,7 @@ const connCheckDelayTimeMs = 300;
 app.peer.on('open', function (myId) {
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
-        "<div>" + myId + "</div><br/>";
+        "<div id=id_num>" + myId + "</div><br/>";
 });
 
 //Client part
