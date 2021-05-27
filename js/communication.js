@@ -26,8 +26,8 @@ app.peer.on('open', function (id) {
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div>" + myId + "</div><br/>";
-        localStorage.setItem("myID", myId); 
-        
+    localStorage.setItem("myID", myId);
+
 });
 
 
@@ -56,6 +56,7 @@ function connect() {
     app.conn.on('data', function (data) {
         if (connected && !server) {
             // console.log("Client: Received server data");
+            // console.log(JSON.stringify(data))
             updates.push(data);
             //Execute update but DO NOT update others
             executeUpdateEvent(data, false)
@@ -99,9 +100,7 @@ app.peer.on('connection',
     });
 
 function sendUpdates(c) {
-    updates.forEach(event => {
-        if (c && c.open) c.send(event);
-    })
+    if (c && c.open) c.send({ type: 'updateHistory', data: updates });
 }
 
 function updateOthers(stateUpdate, excludeFromUpdate = null) {
@@ -129,6 +128,10 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
         if (!sim.users.some(user => user.id === data.id)) {
             sim.addUsers(new User(data.id));
         }
+    } else if (data.type == 'updateHistory') {
+        data.data.forEach(event => {
+            executeUpdateEvent(event)
+        })
     }
 }
 
