@@ -41,6 +41,11 @@ function connect() {
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
+                document.getElementById('btn-time').style.display = "none";
+                document.getElementById('btn-start-sim').style.display = "none";
+                document.getElementById('btn-stop-sim').style.display = "none";
+                document.getElementById('btn-start-manual-sim').style.display = "none";
+                document.getElementById('btn-stop-manual-sim').style.display = "none";
                 client = true;
                 connBlockStatus(false);
                 connected = true;
@@ -136,7 +141,6 @@ function executeUpdateEvent(data, updateOthers = false) {
         sim.users[index].name = data.data;
         handleSubmitNameButton(data.data, data.id, updateOthers)
     }else if (data.type == 'roles') {
-        console.log(data.data)
         index = sim.users.findIndex((user => user.id == data.id));
         sim.users[index].roles = data.data;
 
@@ -178,8 +182,11 @@ function updateConnectionList() {
         connectionListString.push("<div>Clients:</div>")
         connections.forEach(c => {
             index = sim.users.findIndex((user => user.id == c.peer));
-            if(sim.users[index].name && sim.users[index].id && sim.users[index].roles)
-            connectionListString.push("<div><b>Name:</b> " + sim.users[index].name + " <b>ID:</b> " + sim.users[index].id + " <b>Roles:</b> " + sim.users[index].roles + "</div>")
+            if(sim.users[index].name && sim.users[index].id && sim.users[index].roles){
+                connectionListString.push("<div><b>Name:</b> " + sim.users[index].name + " <b>ID:</b> " + sim.users[index].id + " <b>Roles:</b> " + sim.users[index].roles + "</div>")
+            }else{
+                connectionListString.push("<div><b>ID:</b> " + sim.users[index].id + " Setting name and roles.</div>")
+            }
         })
         document.getElementById('conn-list').innerHTML = connectionListString.join('') + "<br/>";
     } else {
@@ -198,6 +205,18 @@ async function connectionChecker() {
         connected = false;
         server = false;
         client = false;
+        document.getElementById('btn-time').style.display = "inline";
+        document.getElementById('btn-start-sim').style.display = "inline";
+        document.getElementById('btn-stop-sim').style.display = "inline";
+        document.getElementById('btn-start-manual-sim').style.display = "inline";
+        document.getElementById('btn-stop-manual-sim').style.display = "inline";
+        document.getElementById('my-roles').style.display = "none";
+        document.getElementById('my-name').style.display = "none";
+        document.getElementById('name-input-block').style.display = "none";
+        document.getElementById('role-select-block').style.display = "none";
+        sim.users = [];
+        user = new User(myId, "server", ["Robot", "Human"])
+        handleNewUser(user, true)
         connBlockStatus(true);
     } else {
         var newConnections = [];

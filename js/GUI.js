@@ -157,10 +157,15 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-sim').click(function (e) {
-        document.getElementById("iter").innerHTML = "";
-        isRunning = true;
-        numIter = 0;
-        startSim();
+        document.getElementById("cant-start").innerHTML = "";
+        if(!sim.checkIfReady()){
+            document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
+        }else{
+            document.getElementById("iter").innerHTML = "";
+            isRunning = true;
+            numIter = 0;
+            startSim();
+        }
     });
 
     $('#btn-stop-sim').click(function (e) {
@@ -168,7 +173,12 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-manual-sim').click(function (e) {
-        handleManualSimButtonClick(this.id, true);
+        if(!sim.checkIfReady()){
+            document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
+        }else{
+            document.getElementById("cant-start").innerHTML = "";
+            handleManualSimButtonClick(this.id, true);
+        }
     });
     $('#btn-stop-manual-sim').click(function (e) {
         handleManualSimButtonClick(this.id, true);

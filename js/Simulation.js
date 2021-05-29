@@ -7,6 +7,7 @@ class Simulation {
         this.isRunning = false;
         this.startTime = undefined
         this.stopTime = undefined
+        this.ready = true
         this.log = [];
     }
 
@@ -31,6 +32,16 @@ class Simulation {
 
     addUsers(user) {
         this.users.push(user);
+    }
+
+    checkIfReady() {
+        this.ready = true
+        this.users.forEach(u => {
+            if(!u.name || !u.id || !u.roles){
+                this.ready = false
+            }
+        });
+        return this.ready
     }
 
     saveLog() {
