@@ -23,7 +23,7 @@ var myId = null;
 app.peer.on('open', function (id) {
     myId = id;
     user = new User(myId, "server", ["Robot", "Human"])
-    handleNewUser(user, true, myId)
+    handleNewUser(user, true)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div id=id_num>" + myId + "</div><br/>";
@@ -40,7 +40,7 @@ function connect() {
         if (!connected && !server) {
             // console.log("Client: New Connection");
             connections.push(app.conn);
-            handleNewUser(new User(app.conn.peer, "server",  ["Robot", "Human"]), false, myId)
+            handleNewUser(new User(app.conn.peer, "server",  ["Robot", "Human"]), false)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
@@ -61,7 +61,6 @@ function connect() {
     app.conn.on('data', function (data) {
         if (connected && !server) {
             // console.log("Client: Received server data");
-            // console.log(JSON.stringify(data))
             updates.push(data);
             //Execute update but DO NOT update others
             executeUpdateEvent(data, false)
@@ -99,35 +98,37 @@ app.peer.on('connection',
                 // console.log("Server: Received client data");
                 updates.push(data);
                 //Execute update AND update others
-                executeUpdateEvent(data, true, app.conn.peer);
+                executeUpdateEvent(data, true);
             }
         });
     });
 
 function sendUpdates(c) {
-    if (c && c.open) c.send({ type: 'updateHistory', data: updates });
+    updates.forEach(event => {
+        if (c && c.open) c.send(event);
+    })
 }
 
-function updateOthers(stateUpdate, excludeFromUpdate = null) {
+function updateOthers(stateUpdate) {
     //Push update to updates list
     updates.push(stateUpdate);
 
     if (connections.length > 0) {
         connections.forEach(c => {
             // console.log("Update sent")
-            if (c && c.open && excludeFromUpdate != c.peer) c.send(stateUpdate);
+            if (c && c.open) c.send(stateUpdate);
         });
     }
 }
 
-function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null) {
+function executeUpdateEvent(data, updateOthers = false) {
     if (data.type == 'textField') {
         document.getElementById(data.id).value = data.data;
-        handleTextAreaChange(updateOthers, excludeFromUpdate);
+        handleTextAreaChange(updateOthers);
     } else if (data.type == 'eventButton') {
-        handleEventButtonClick(data.id, updateOthers, excludeFromUpdate);
+        handleEventButtonClick(data.id, updateOthers);
     } else if (data.type == 'manualSimButton') {
-        handleManualSimButtonClick(data.id, updateOthers, excludeFromUpdate)
+        handleManualSimButtonClick(data.id, updateOthers)
     } else if (data.type == 'newUser') {
         //Add only if not in array
         if (!sim.users.some(user => user.id === data.id.id)) {
@@ -153,11 +154,6 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
             human = true
         }
         handleSubmitNameButton(robot, human, data.id, updateOthers)
-
-     } else if (data.type == 'updateHistory') {
-        data.data.forEach(event => {
-            executeUpdateEvent(event)
-        })
     }
 }
 
