@@ -33,9 +33,6 @@ class Log {
     
     // Call to save the log.
     saveLog() {
-        console.log("What up");
-        console.log(this.Entries[0].toString());
-
         const rows = [];
 
         this.Entries.forEach(function (entryRow){
