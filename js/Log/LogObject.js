@@ -1,7 +1,12 @@
 class Log {
     constructor() {
-        this.LogID = 0;
-        this.Date = 0;
+
+        //Singleton-pattern
+        if (!!Log.instance) {
+            return Log.instance;
+        }
+        Log.instance = this;
+
         this.Entries = new Array();
     }
 
@@ -19,16 +24,15 @@ class Log {
         console.log("executing");
         var logEntry = new Entry(id, eventName, timestamp, role, newValue);
         this.Entries.push(logEntry);
-        
-        return 0;
+    }
+
+    discardLog() {
+        this.Entries = new Array();
     }
 
     
     // Call to save the log.
     saveLog() {
-        console.log("What up");
-        console.log(this.Entries[0].toString());
-
         const rows = [];
 
         this.Entries.forEach(function (entryRow){
@@ -49,6 +53,5 @@ class Log {
         document.body.appendChild(link); // Required for FF
 
         link.click(); // This will download the data file named "my_data.csv".
-        return 0;
     }
 }
