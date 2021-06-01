@@ -120,8 +120,6 @@ function updateOthers(stateUpdate, excludeFromUpdate = null) {
 }
 
 function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null) {
-    console.log("Exclude")
-    console.log(excludeFromUpdate)
     if (data.type == 'textField') {
         document.getElementById(data.id).value = data.data;
         handleTextAreaChange(updateOthers, excludeFromUpdate);
