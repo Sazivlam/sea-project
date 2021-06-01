@@ -23,7 +23,7 @@ var myId = null;
 app.peer.on('open', function (id) {
     myId = id;
     user = new User(myId, "server", ["Robot", "Human"])
-    handleNewUser(user, true)
+    handleNewUser(user, true, myId)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div id=id_num>" + myId + "</div><br/>";
@@ -40,7 +40,7 @@ function connect() {
         if (!connected && !server) {
             // console.log("Client: New Connection");
             connections.push(app.conn);
-            handleNewUser(new User(app.conn.peer, "server",  ["Robot", "Human"]), false)
+            handleNewUser(new User(app.conn.peer, "server",  ["Robot", "Human"]), false, myId)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
@@ -98,7 +98,7 @@ app.peer.on('connection',
                 // console.log("Server: Received client data");
                 updates.push(data);
                 //Execute update AND update others
-                executeUpdateEvent(data, true);
+                executeUpdateEvent(data, true, c.peer);
             }
         });
     });
@@ -109,26 +109,28 @@ function sendUpdates(c) {
     })
 }
 
-function updateOthers(stateUpdate) {
+function updateOthers(stateUpdate, excludeFromUpdate = null) {
     //Push update to updates list
     updates.push(stateUpdate);
 
     if (connections.length > 0) {
         connections.forEach(c => {
             // console.log("Update sent")
-            if (c && c.open) c.send(stateUpdate);
+            if (c && c.open && excludeFromUpdate != c.peer) c.send(stateUpdate);
         });
     }
 }
 
-function executeUpdateEvent(data, updateOthers = false) {
+function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null) {
+    console.log("Exclude")
+    console.log(excludeFromUpdate)
     if (data.type == 'textField') {
         document.getElementById(data.id).value = data.data;
-        handleTextAreaChange(updateOthers);
+        handleTextAreaChange(updateOthers, excludeFromUpdate);
     } else if (data.type == 'eventButton') {
-        handleEventButtonClick(data.id, updateOthers);
+        handleEventButtonClick(data.id, updateOthers, excludeFromUpdate);
     } else if (data.type == 'manualSimButton') {
-        handleManualSimButtonClick(data.id, updateOthers)
+        handleManualSimButtonClick(data.id, updateOthers, excludeFromUpdate)
     } else if (data.type == 'newUser') {
         //Add only if not in array
         if (!sim.users.some(user => user.id === data.id.id)) {
@@ -142,7 +144,7 @@ function executeUpdateEvent(data, updateOthers = false) {
     } else if (data.type == 'name') {
         index = sim.users.findIndex((user => user.id == data.id));
         sim.users[index].name = data.data;
-        handleSubmitNameButton(data.data, data.id, updateOthers)
+        handleSubmitNameButton(data.data, data.id, updateOthers, excludeFromUpdate)
     }else if (data.type == 'roles') {
         index = sim.users.findIndex((user => user.id == data.id));
         sim.users[index].roles = data.data;
@@ -153,7 +155,7 @@ function executeUpdateEvent(data, updateOthers = false) {
         if(data.data.includes("Human")){
             human = true
         }
-        handleSubmitNameButton(robot, human, data.id, updateOthers)
+        handleSubmitNameButton(robot, human, data.id, updateOthers, excludeFromUpdate)
     }
 }
 
