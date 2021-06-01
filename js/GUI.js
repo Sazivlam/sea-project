@@ -3,6 +3,8 @@ var isRunning = false;
 var numIter = 0;
 var iterations = [];
 
+
+
 function fillDcrTable(status) {
     for (var row of status) {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");
@@ -28,10 +30,12 @@ function startSim() {
                 names.push(row.name);
             }
         }
-
+         
         chosenEvent = _.sample(names)
-
-        iterations.push("Iteration: " + numIter + "; Executed Event: " + chosenEvent + "<br />")
+        var today = new Date();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var myIDD = localStorage.getItem("myID");  
+        iterations.push("Time : " + time +  ", User ID :" + myIDD +  " , Executed Event: " + chosenEvent +  "<br />")
 
         document.getElementById("iter").innerHTML = iterations.join("");
 
@@ -50,7 +54,7 @@ function handleTextAreaChange(updateOther = false) {
         sim.changeGraph(x.value);
         fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
-        if(updateOther) {
+        if (updateOther) {
             updateOthers({
                 type: 'textField',
                 id: 'ta-dcr',
@@ -65,7 +69,8 @@ function handleTextAreaChange(updateOther = false) {
 
 function handleEventButtonClick(buttondId, updateOther = false) {
     if (sim.isRunning) {
-        sim.executeEvent(buttondId);
+        clientId = document.getElementById("id_num").innerHTML
+        sim.executeEvent(buttondId, clientId);
         if (updateOther) {
             updateOthers({ type: 'eventButton', id: buttondId })
         }
@@ -183,6 +188,11 @@ $(document).ready(function (e) {
     $('#btn-stop-manual-sim').click(function (e) {
         handleManualSimButtonClick(this.id, true);
     });
+
+    $('#btn-download-model').click(function (e) {
+        var content = document.getElementById("ta-dcr").value;
+        download(content, 'model.txt', 'text/csv;encoding:utf-8');
+    })
 
     $('#btn-conn').click(function (e) {
         connect();

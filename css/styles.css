@@ -5,7 +5,34 @@ html, body {
 #task-table {
     font-family: calibri, arial;
     border-collapse: collapse;
-    width: 400px;
+    
+    text-align:center;
+    width:40%; 
+    margin-left:15%; 
+    margin-right:15%;
+}
+/* #peer-input-block , #my-id , #conn-status , #server-id , #conn-list {
+    text-align:center;
+}
+*/
+
+#accepting {
+    width:40%; 
+    margin-left:30%; 
+    margin-right:25%;
+    height: auto;
+    font-size: 30px;
+    font-family: unquote("Roboto");
+
+}
+
+#iter {
+    margin-right:15%; 
+    
+    float:right;
+    float: top;
+    
+
 }
 
 #task-table td {
@@ -14,6 +41,8 @@ html, body {
     border: 1px solid black;   
 }
 
-#task-table tr:nth-child(odd){background-color: #a8c7f7;}
+button {margin: 20px;}
 
-#task-table tr:nth-child(even){background-color: #dbf7ff;}
+#task-table tr:nth-child(odd){background-color: #b8f7a8;}
+
+#task-table tr:nth-child(even){background-color: #dbdfff;}

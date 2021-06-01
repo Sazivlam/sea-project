@@ -26,8 +26,11 @@ app.peer.on('open', function (id) {
     handleNewUser(user, true)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
-        "<div>" + id + "</div><br/>";
+        "<div id=id_num>" + myId + "</div><br/>";
+        localStorage.setItem("myID", myId); 
 });
+
+
 
 //Client part
 function connect() {

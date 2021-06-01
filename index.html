@@ -7,6 +7,8 @@
   <meta name="description" content="JavaScript DCR Graphs Engine">
   <meta name="author" content="Tijs Slaats">
   <link rel="stylesheet" href="css/styles.css?v=1.0">
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 </head>
 
 <body>
@@ -21,18 +23,21 @@
   <script src="js/communication.js"></script>
   <script src="js/Simulation.js"></script>
   <script src="js/GUI.js"></script>
+  <script src="js/utilities.js"></script>
 
-  <table id="task-table"></table>
-  <p id="accepting"></p>
-  <br />
-
+  <table   id="task-table"></table>
   <p id="iter"></p>
+  <br />
+  <p id="accepting"  ></p>
+
   <br />
 
   <div id="peer-input-block">
     <div id="peer-input-text">Enter server ID or wait for client to connect</div>
     <input id="peer-input-id">
-    <button id="btn-conn">Connect</button>
+
+    <button class="mdc-button mdc-button--raised" id="btn-conn">
+       <span class="mdc-button__label">Connect</span>  </button>
   </div>
 
   <div id="name-input-block" style="display: none;">
@@ -60,19 +65,29 @@
   <p id="cant-start"></p>
 
 
-  <button id="btn-time">Time+1</button>&nbsp;
+  <button class="mdc-button mdc-button--raised" id="btn-time">
+    <span class="mdc-button__label">Time+1</span></button>&nbsp;
   <br />
 
-  <button id="btn-start-sim">Start Simulation</button>&nbsp;
-  <br />
 
-  <button id="btn-stop-sim">Stop Simulation</button>&nbsp;
+
+  <button  class="mdc-button mdc-button--raised" id="btn-start-sim">
+    <span class="mdc-button__label">Start Simulation</span></button>&nbsp;
+  
+
+
+
+  <button class="mdc-button mdc-button--raised" id="btn-stop-sim">
+    <span class="mdc-button__label">Stop Simulation</span></button>&nbsp;
   <br />
 
   <button id="btn-start-manual-sim">Start manual simulation</button>&nbsp;
   <br />
   
   <button id="btn-stop-manual-sim">Stop manual simulation</button>&nbsp;
+  <br />
+
+  <button id="btn-download-model">Download model</button>&nbsp;
   <br />
 
   <textarea id="ta-dcr" rows="20" cols="150">
@@ -86,6 +101,9 @@ D -->* B
 A --><> (B, D)    
   </textarea>
   <p id="parse-error"></p>
+
+
+
 
 </body>
 

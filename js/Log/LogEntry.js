@@ -13,7 +13,7 @@ class Entry {
         return "(" + this.Id + "," + this.UserName + "," + this.EventName + "," + this.Timestamp + "," + this.Role + "," + this.newValue + ")";
     }
 
-    returnEntry() {
-        throw new exception();
+    toCsv() {
+        return [this.Id, this.UserName, this.EventName, this.Timestamp, this.Role, this.NewValue];
     }
 }
