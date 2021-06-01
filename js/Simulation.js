@@ -7,16 +7,17 @@ class Simulation {
         this.isRunning = false;
         this.startTime = undefined
         this.stopTime = undefined
-        this.log = [];
+        this.ready = true
+        this.log = new Log();
     }
 
     changeGraph(input) {
         this.graph = parser.parse(input);
     }
 
-    executeEvent(event) {
+    executeEvent(event, userName) {
         this.graph.execute(event)
-        this.log.push(event);
+        this.log.logEvent(userName, event, new Date().toLocaleString(), "test", "undefined")
     }
 
     startSimulation() {
@@ -27,10 +28,21 @@ class Simulation {
     stopSimulation() {
         this.isRunning = false;
         this.stopTime = new Date().toLocaleString();
+        this.log.saveLog()
     }
 
     addUsers(user) {
         this.users.push(user);
+    }
+
+    checkIfReady() {
+        this.ready = true
+        this.users.forEach(u => {
+            if(!u.name || !u.id || !u.roles){
+                this.ready = false
+            }
+        });
+        return this.ready
     }
 
     saveLog() {
@@ -49,9 +61,9 @@ class Simulation {
 
 
 class User {
-    constructor(id, name) {
+    constructor(id, name, roles) {
         this.id = id;
         this.name = name;
-        this.roles = []
+        this.roles = roles;
     }
 }

@@ -69,7 +69,8 @@ function handleTextAreaChange(updateOther = false, excludeFromUpdate = null) {
 
 function handleEventButtonClick(buttondId, updateOther = false, excludeFromUpdate = null) {
     if (sim.isRunning) {
-        sim.executeEvent(buttondId);
+        clientId = document.getElementById("id_num").innerHTML
+        sim.executeEvent(buttondId, clientId);
         if (updateOther) {
             updateOthers({ type: 'eventButton', id: buttondId }, excludeFromUpdate)
         }
@@ -78,7 +79,7 @@ function handleEventButtonClick(buttondId, updateOther = false, excludeFromUpdat
 }
 
 function handleNewUser(userId, updateOther = false, excludeFromUpdate = null) {
-    sim.addUsers(new User(userId));
+    sim.addUsers(user);
     if (updateOther) {
         updateOthers({ type: 'newUser', id: userId }, excludeFromUpdate)
     }
@@ -97,6 +98,58 @@ function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUp
     }
 }
 
+function handleSubmitNameButton(name = null, id = null, updateOther = false) {
+    if(name.trim().length == 0){
+        document.getElementById("input-error").innerHTML = "Name must not be empty.</br>";
+    }else{
+        document.getElementById("input-error").innerHTML = "";
+        index = sim.users.findIndex((user => user.id == id));
+        sim.users[index].name = name
+
+        if (id === myId){
+            document.getElementById('name-input-block').style.display = "none";
+            document.getElementById('my-name').style.display = "block";
+            document.getElementById('my-name').innerHTML =
+            "<div>My Name: </div>" +
+            "<div>" + name + "</div><br/>";
+            document.getElementById('role-select-block').style.display = "block";
+        }
+        if (updateOther) {
+            updateOthers({ type: 'name', id: id, data: name })
+        }
+    }
+    
+}
+
+function handleRoleSubmitButton(robot, human, id = null, updateOther = false) {
+    if(!human && !robot){
+        document.getElementById("input-error").innerHTML = "At least one role must be selected.</br>";
+    }else{
+        document.getElementById("input-error").innerHTML = "";
+        index = sim.users.findIndex((user => user.id == id));
+
+        if(robot){
+            sim.users[index].roles.push("Robot");
+        }
+        if(human){
+            sim.users[index].roles.push("Human");
+        }
+
+        if (id === myId){
+            document.getElementById('role-select-block').style.display = "none";
+            document.getElementById('my-roles').style.display = "block";
+            document.getElementById('my-roles').innerHTML =
+            "<div>My Roles: </div>" +
+            "<div>" + sim.users[index].roles + "</div><br/>";
+        }
+
+        if (updateOther) {
+            updateOthers({ type: 'roles', id: id, data: sim.users[index].roles })
+        }
+    }
+    
+}
+
 $(document).ready(function (e) {
     taskTable = dynamicTable.config('task-table',
         ['executed', 'included', 'pending', 'enabled', 'name'],
@@ -109,10 +162,15 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-sim').click(function (e) {
-        document.getElementById("iter").innerHTML = "";
-        isRunning = true;
-        numIter = 0;
-        startSim();
+        document.getElementById("cant-start").innerHTML = "";
+        if(!sim.checkIfReady()){
+            document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
+        }else{
+            document.getElementById("iter").innerHTML = "";
+            isRunning = true;
+            numIter = 0;
+            startSim();
+        }
     });
 
     $('#btn-stop-sim').click(function (e) {
@@ -120,7 +178,12 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-manual-sim').click(function (e) {
-        handleManualSimButtonClick(this.id, true, myId);
+        if(!sim.checkIfReady()){
+            document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
+        }else{
+            document.getElementById("cant-start").innerHTML = "";
+            handleManualSimButtonClick(this.id, true, myId);
+        }
     });
     $('#btn-stop-manual-sim').click(function (e) {
         handleManualSimButtonClick(this.id, true, myId);
@@ -133,6 +196,17 @@ $(document).ready(function (e) {
 
     $('#btn-conn').click(function (e) {
         connect();
+    });
+
+    $('#btn-subname').click(function (e) {
+        var name = document.getElementById("name-input-id").value;
+        handleSubmitNameButton(name, myId, true);
+    });
+
+     $('#btn-role').click(function (e) {
+        var robot = document.getElementById("robot").checked;
+        var human = document.getElementById("human").checked;
+        handleRoleSubmitButton(robot, human, myId, true);
     });
 
     $('#ta-dcr').keyup(function (e) {
