@@ -104,9 +104,7 @@ app.peer.on('connection',
     });
 
 function sendUpdates(c) {
-    updates.forEach(event => {
-        if (c && c.open) c.send(event);
-    })
+    if (c && c.open) c.send({ type: 'updateHistory', data: updates })
 }
 
 function updateOthers(stateUpdate, excludeFromUpdate = null) {
@@ -156,6 +154,10 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
             human = true
         }
         handleSubmitNameButton(robot, human, data.id, updateOthers, excludeFromUpdate)
+    } else if (data.type == 'updateHistory') {
+        data.data.forEach(event => {
+            executeUpdateEvent(event)
+        })
     }
 }
 
