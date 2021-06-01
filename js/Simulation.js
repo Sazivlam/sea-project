@@ -5,8 +5,9 @@ class Simulation {
         this.users = [];
         this.id = 1;
         this.isRunning = false;
-        this.startTime = undefined;
-        this.stopTime = undefined;
+        this.startTime = undefined
+        this.stopTime = undefined
+        this.ready = true
         this.log = new Log();
     }
 
@@ -34,6 +35,16 @@ class Simulation {
         this.users.push(user);
     }
 
+    checkIfReady() {
+        this.ready = true
+        this.users.forEach(u => {
+            if(!u.name || !u.id || !u.roles){
+                this.ready = false
+            }
+        });
+        return this.ready
+    }
+
     saveLog() {
         console.log(this.log);
     }
@@ -50,9 +61,9 @@ class Simulation {
 
 
 class User {
-    constructor(id, name) {
+    constructor(id, name, roles) {
         this.id = id;
         this.name = name;
-        this.roles = []
+        this.roles = roles;
     }
 }

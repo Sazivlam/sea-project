@@ -22,7 +22,8 @@ var myId = null;
 //Set my id
 app.peer.on('open', function (id) {
     myId = id;
-    handleNewUser(myId, true)
+    user = new User(myId, "server", ["Robot", "Human"])
+    handleNewUser(user, true)
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div id=id_num>" + myId + "</div><br/>";
@@ -39,10 +40,15 @@ function connect() {
         if (!connected && !server) {
             // console.log("Client: New Connection");
             connections.push(app.conn);
-            handleNewUser(app.conn.peer, false)
+            handleNewUser(new User(app.conn.peer, "server",  ["Robot", "Human"]), false)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
+                document.getElementById('btn-time').style.display = "none";
+                document.getElementById('btn-start-sim').style.display = "none";
+                document.getElementById('btn-stop-sim').style.display = "none";
+                document.getElementById('btn-start-manual-sim').style.display = "none";
+                document.getElementById('btn-stop-manual-sim').style.display = "none";
                 client = true;
                 connBlockStatus(false);
                 connected = true;
@@ -72,7 +78,7 @@ app.peer.on('connection',
             if (!client) {
                 // console.log("Server: New Connection");
                 connections.push(c);
-                handleNewUser(c.peer, true)
+                handleNewUser(new User(c.peer), true)
                 //Only for the first connection
                 if (!connected) {
                     document.getElementById('conn-status').innerHTML = "Connection established as Server";
@@ -125,9 +131,29 @@ function executeUpdateEvent(data, updateOthers = false) {
         handleManualSimButtonClick(data.id, updateOthers)
     } else if (data.type == 'newUser') {
         //Add only if not in array
-        if (!sim.users.some(user => user.id === data.id)) {
-            sim.addUsers(new User(data.id));
+        if (!sim.users.some(user => user.id === data.id.id)) {
+            sim.addUsers(new User(data.id.id));
         }
+        if(sim.users.some(user => user.id === data.id.id) && data.id.id === myId && client){
+            index = sim.users.findIndex((user => user.id == data.id.id));
+            sim.users[index].name = undefined
+            sim.users[index].roles = [];
+        }
+    } else if (data.type == 'name') {
+        index = sim.users.findIndex((user => user.id == data.id));
+        sim.users[index].name = data.data;
+        handleSubmitNameButton(data.data, data.id, updateOthers)
+    }else if (data.type == 'roles') {
+        index = sim.users.findIndex((user => user.id == data.id));
+        sim.users[index].roles = data.data;
+
+        if(data.data.includes("Robot")){
+            robot = true
+        }
+        if(data.data.includes("Human")){
+            human = true
+        }
+        handleSubmitNameButton(robot, human, data.id, updateOthers)
     }
 }
 
@@ -140,6 +166,9 @@ function connBlockStatus(status) {
         document.getElementById('server-id').style.display = "none";
     } else {
         //When first connection established
+        if (client){
+            document.getElementById('name-input-block').style.display = "block";
+        }
         document.getElementById('conn-status').style.display = "block";
         document.getElementById('peer-input-block').style.display = "none";
         if (server) {
@@ -149,18 +178,25 @@ function connBlockStatus(status) {
         }
     }
 }
+
 function updateConnectionList() {
     var connectionListString = [];
     if (server) {
         connectionListString.push("<div>Clients:</div>")
         connections.forEach(c => {
-            connectionListString.push("<div>" + c.peer + "</div>")
+            index = sim.users.findIndex((user => user.id == c.peer));
+            if(sim.users[index].name && sim.users[index].id && sim.users[index].roles){
+                connectionListString.push("<div><b>Name:</b> " + sim.users[index].name + " <b>ID:</b> " + sim.users[index].id + " <b>Roles:</b> " + sim.users[index].roles + "</div>")
+            }else{
+                connectionListString.push("<div><b>ID:</b> " + sim.users[index].id + " Setting name and roles.</div>")
+            }
         })
         document.getElementById('conn-list').innerHTML = connectionListString.join('') + "<br/>";
     } else {
-        connectionListString.push("<div>Server ID: </div>")
+        connectionListString.push("<div>Server: </div>")
         connections.forEach(c => {
-            connectionListString.push("<div>" + c.peer + "</div>")
+            index = sim.users.findIndex((user => user.id == c.peer));
+            connectionListString.push("<div><b>Name:</b> " + sim.users[index].name + " <b>ID:</b> " + sim.users[index].id + " <b>Roles:</b> " + sim.users[index].roles + "</div>")
         })
         document.getElementById('server-id').innerHTML = connectionListString.join('') + "<br/>";
     }
@@ -172,6 +208,18 @@ async function connectionChecker() {
         connected = false;
         server = false;
         client = false;
+        document.getElementById('btn-time').style.display = "inline";
+        document.getElementById('btn-start-sim').style.display = "inline";
+        document.getElementById('btn-stop-sim').style.display = "inline";
+        document.getElementById('btn-start-manual-sim').style.display = "inline";
+        document.getElementById('btn-stop-manual-sim').style.display = "inline";
+        document.getElementById('my-roles').style.display = "none";
+        document.getElementById('my-name').style.display = "none";
+        document.getElementById('name-input-block').style.display = "none";
+        document.getElementById('role-select-block').style.display = "none";
+        sim.users = [];
+        user = new User(myId, "server", ["Robot", "Human"])
+        handleNewUser(user, true)
         connBlockStatus(true);
     } else {
         var newConnections = [];

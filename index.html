@@ -39,10 +39,31 @@
     <button class="mdc-button mdc-button--raised" id="btn-conn">
        <span class="mdc-button__label">Connect</span>  </button>
   </div>
+
+  <div id="name-input-block" style="display: none;">
+    <div id="name-input-text">Enter your name</div>
+    <input id="name-input-id">
+    <button id="btn-subname">Submit</button>
+  </div>
+
+  <div id="role-select-block" style="display: none;">
+    <div id="role-selection">Select your roles</div>
+    <label>Robot</label>
+    <input type='checkbox' id='robot'>
+    <label>Human</label>
+    <input type='checkbox' id='human'>
+    <button id="btn-role">Submit</button>
+  </div>
+  <p id="input-error"></p>
+
   <div id="my-id"></div>
+  <div id="my-name" style="display: none;"></div>
+  <div id="my-roles" style="display: none;"></div>
   <div id="conn-status"></div>
   <div id="server-id"></div>
   <div id="conn-list"></div>
+  <p id="cant-start"></p>
+
 
   <button class="mdc-button mdc-button--raised" id="btn-time">
     <span class="mdc-button__label">Time+1</span></button>&nbsp;
