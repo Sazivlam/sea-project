@@ -5,18 +5,18 @@ class Simulation {
         this.users = [];
         this.id = 1;
         this.isRunning = false;
-        this.startTime = undefined
-        this.stopTime = undefined
-        this.log = [];
+        this.startTime = undefined;
+        this.stopTime = undefined;
+        this.log = new Log();
     }
 
     changeGraph(input) {
         this.graph = parser.parse(input);
     }
 
-    executeEvent(event) {
+    executeEvent(event, userName) {
         this.graph.execute(event)
-        this.log.push(event);
+        this.log.logEvent(userName, event, new Date().toLocaleString(), "test", "undefined")
     }
 
     startSimulation() {
@@ -27,6 +27,7 @@ class Simulation {
     stopSimulation() {
         this.isRunning = false;
         this.stopTime = new Date().toLocaleString();
+        this.log.saveLog()
     }
 
     addUsers(user) {
