@@ -75,21 +75,25 @@ app.peer.on('connection',
         //New client connects
         app.conn.on('open', function (incomingPeerId) {
             // console.log("New client connects");
-            if (!client) {
-                // console.log("Server: New Connection");
-                connections.push(c);
-                handleNewUser(new User(c.peer), true)
-                //Only for the first connection
-                if (!connected) {
-                    document.getElementById('conn-status').innerHTML = "Connection established as Server";
-                    server = true;
-                    connBlockStatus(false);
-                    connected = true;
-                    //Start async connection checker
-                    connectionChecker();
+            if (sim.isRunning){
+                c.send({ type: 'simRunningServer' })
+            }else{
+                if (!client) {
+                    // console.log("Server: New Connection");
+                    connections.push(c);
+                    handleNewUser(new User(c.peer), true)
+                    //Only for the first connection
+                    if (!connected) {
+                        document.getElementById('conn-status').innerHTML = "Connection established as Server";
+                        server = true;
+                        connBlockStatus(false);
+                        connected = true;
+                        //Start async connection checker
+                        connectionChecker();
+                    }
+                    //Get the client up to date (make him apply all the changes we had)
+                    sendUpdates(c);
                 }
-                //Get the client up to date (make him apply all the changes we had)
-                sendUpdates(c);
             }
         });
         //Receive client data
@@ -124,7 +128,7 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
         document.getElementById(data.id).value = data.data;
         handleTextAreaChange(updateOthers, excludeFromUpdate);
     } else if (data.type == 'eventButton') {
-        handleEventButtonClick(data.id, updateOthers, excludeFromUpdate);
+        handleEventButtonClick(data.id, data.data, updateOthers, excludeFromUpdate);
     } else if (data.type == 'manualSimButton') {
         handleManualSimButtonClick(data.id, updateOthers, excludeFromUpdate)
     } else if (data.type == 'newUser') {
@@ -151,11 +155,21 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
         if(data.data.includes("Human")){
             human = true
         }
-        handleSubmitNameButton(robot, human, data.id, updateOthers, excludeFromUpdate)
+
+        handleRoleSubmitButton(robot, human, data.id, updateOthers, excludeFromUpdate)
     } else if (data.type == 'updateHistory') {
         data.data.forEach(event => {
             executeUpdateEvent(event)
         })
+        document.getElementById('btn-save-log').style.display = "none";
+        document.getElementById('btn-discard-log').style.display = "none";
+        document.getElementById('sim-status').style.display = "none";
+    } else if (data.type == 'simRunningServer'){
+        document.getElementById("cant-connect").innerHTML = "Server is currently running a simulation; please connect once it has finished.";
+        client = false;
+        connected = false;
+        connections = []
+        connBlockStatus(true);
     }
 }
 
@@ -166,10 +180,25 @@ function connBlockStatus(status) {
         document.getElementById('peer-input-block').style.display = "block";
         document.getElementById('conn-list').style.display = "none";
         document.getElementById('server-id').style.display = "none";
+        document.getElementById('name-input-block').style.display = "none";
+        document.getElementById('btn-start-sim').style.display = "inline";
+        document.getElementById('btn-stop-sim').style.display = "inline";
+        document.getElementById('btn-start-manual-sim').style.display = "inline";
+        document.getElementById('btn-stop-manual-sim').style.display = "inline";
+        document.getElementById('my-roles').style.display = "none";
+        document.getElementById('my-name').style.display = "none";
+        document.getElementById('role-select-block').style.display = "none";
+        document.getElementById('btn-save-log').style.display = "none";
+        document.getElementById('btn-discard-log').style.display = "none";
+        document.getElementById('sim-status').style.display = "none";
+        document.getElementById('cant-start').style.display = "none";
     } else {
         //When first connection established
         if (client){
             document.getElementById('name-input-block').style.display = "block";
+            document.getElementById('btn-save-log').style.display = "none";
+            document.getElementById('btn-discard-log').style.display = "none";
+            document.getElementById('sim-status').style.display = "none";
         }
         document.getElementById('conn-status').style.display = "block";
         document.getElementById('peer-input-block').style.display = "none";
@@ -210,7 +239,6 @@ async function connectionChecker() {
         connected = false;
         server = false;
         client = false;
-        document.getElementById('btn-time').style.display = "inline";
         document.getElementById('btn-start-sim').style.display = "inline";
         document.getElementById('btn-stop-sim').style.display = "inline";
         document.getElementById('btn-start-manual-sim').style.display = "inline";
@@ -219,6 +247,10 @@ async function connectionChecker() {
         document.getElementById('my-name').style.display = "none";
         document.getElementById('name-input-block').style.display = "none";
         document.getElementById('role-select-block').style.display = "none";
+        document.getElementById('btn-save-log').style.display = "none";
+        document.getElementById('btn-discard-log').style.display = "none";
+        document.getElementById('sim-status').style.display = "none";
+        document.getElementById('cant-start').style.display = "none";
         sim.users = [];
         user = new User(myId, "server", ["Robot", "Human"])
         handleNewUser(user, true)

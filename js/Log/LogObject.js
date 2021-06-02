@@ -7,7 +7,7 @@ class Log {
         }
         Log.instance = this;
 
-        this.Entries = new Array();
+        this.Entries = [];
     }
 
     // For testing purposes
@@ -21,13 +21,12 @@ class Log {
     // To log events, whenever anything is done in the graph.
     logEvent(id, eventName, timestamp, role, newValue)
     {
-        console.log("executing");
         var logEntry = new Entry(id, eventName, timestamp, role, newValue);
         this.Entries.push(logEntry);
     }
 
     discardLog() {
-        this.Entries = new Array();
+        this.Entries = [];
     }
 
     
