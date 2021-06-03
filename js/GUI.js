@@ -10,7 +10,7 @@ function fillDcrTable(status) {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");
         row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
         row.included = (row.included ? "" : "%");
-        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + " onclick=\"handleEventButtonClick(this.id, true, myId);\">" + row.label + "</button>";
+        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + " onclick=\"handleEventButtonClick(this.id, myId, true, myId);\">" + row.label + "</button>";
     }
     taskTable.load(status);
     updateAccepting(sim.graph.isAccepting());
@@ -67,12 +67,12 @@ function handleTextAreaChange(updateOther = false, excludeFromUpdate = null) {
     }
 }
 
-function handleEventButtonClick(buttondId, updateOther = false, excludeFromUpdate = null) {
+function handleEventButtonClick(buttondId, userID, updateOther = false, excludeFromUpdate = null) {
     if (sim.isRunning) {
-        clientId = document.getElementById("id_num").innerHTML
-        sim.executeEvent(buttondId, clientId);
+        sim.graph.timeStep(1);
+        sim.executeEvent(buttondId, userID);
         if (updateOther) {
-            updateOthers({ type: 'eventButton', id: buttondId }, excludeFromUpdate)
+            updateOthers({ type: 'eventButton', id: buttondId, data: userID }, excludeFromUpdate)
         }
     }
     fillDcrTable(sim.graph.status());
@@ -87,9 +87,45 @@ function handleNewUser(user, updateOther = false, excludeFromUpdate = null) {
 
 function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == 'btn-start-manual-sim') {
+        document.getElementById("sim-status").innerHTML = "Simulation running.";
+        if(server || (!server && !client)){
+            document.getElementById('btn-pause-manual-sim').style.display = "block";
+            document.getElementById('btn-stop-manual-sim').style.display = "block";
+            document.getElementById('btn-start-manual-sim').style.display = "none";
+        }
+        if(!server && !client){
+            document.getElementById('peer-input-block').style.display = "none";
+        }
+        document.getElementById('btn-save-log').style.display = "none";
+        document.getElementById('btn-discard-log').style.display = "none";
         sim.startSimulation()
     } else if (buttonID == 'btn-stop-manual-sim') {
+        if(server || (!server && !client)){
+            document.getElementById('btn-pause-manual-sim').style.display = "none";
+            document.getElementById('btn-stop-manual-sim').style.display = "none";
+            document.getElementById('btn-start-manual-sim').style.display = "block";
+        }
+         if(!server && !client){
+            document.getElementById('peer-input-block').style.display = "block";
+        }
+        document.getElementById("sim-status").innerHTML = "Simulation finished.";
+        document.getElementById('btn-save-log').style.display = "block";
+        document.getElementById('btn-discard-log').style.display = "block";
         sim.stopSimulation()
+    } else if (buttonID == 'btn-pause-manual-sim') {
+        if(server || (!server && !client)){
+            document.getElementById('btn-resume-manual-sim').style.display = "block";
+            document.getElementById('btn-pause-manual-sim').style.display = "none";
+        }
+        document.getElementById("sim-status").innerHTML = "Simulation paused.";
+        sim.pauseSimulation()
+    } else if (buttonID == 'btn-resume-manual-sim') {
+        if(server || (!server && !client)){
+            document.getElementById('btn-resume-manual-sim').style.display = "none";
+            document.getElementById('btn-pause-manual-sim').style.display = "block";
+        }
+        document.getElementById("sim-status").innerHTML = "Simulation running.";
+        sim.resumeSimulation()
     }
     fillDcrTable(sim.graph.status())
 
@@ -126,21 +162,23 @@ function handleRoleSubmitButton(robot, human, id = null, updateOther = false, ex
         document.getElementById("input-error").innerHTML = "At least one role must be selected.</br>";
     }else{
         document.getElementById("input-error").innerHTML = "";
-        index = sim.users.findIndex((user => user.id == id));
-
-        if(robot){
-            sim.users[index].roles.push("Robot");
-        }
-        if(human){
-            sim.users[index].roles.push("Human");
-        }
+        index = sim.users.findIndex((user => user.id === id));
 
         if (id === myId){
+            if(robot){
+            sim.users[index].roles.push("Robot");
+            }
+            if(human){
+                sim.users[index].roles.push("Human");
+            }
+
             document.getElementById('role-select-block').style.display = "none";
             document.getElementById('my-roles').style.display = "block";
             document.getElementById('my-roles').innerHTML =
             "<div>My Roles: </div>" +
             "<div>" + sim.users[index].roles + "</div><br/>";
+            document.getElementById('sim-status').style.display = "block";
+            document.getElementById("sim-status").innerHTML = "Waiting for server to start simulation.";
         }
 
         if (updateOther) {
@@ -185,8 +223,27 @@ $(document).ready(function (e) {
             handleManualSimButtonClick(this.id, true, myId);
         }
     });
+
     $('#btn-stop-manual-sim').click(function (e) {
         handleManualSimButtonClick(this.id, true, myId);
+    });
+
+    $('#btn-pause-manual-sim').click(function (e) {
+        handleManualSimButtonClick(this.id, true, myId);
+    });
+
+    $('#btn-resume-manual-sim').click(function (e) {
+        handleManualSimButtonClick(this.id, true, myId);
+    });
+
+     $('#btn-save-log').click(function (e) {
+        sim.saveLog()
+    });
+
+    $('#btn-discard-log').click(function (e) {
+        sim.discardLog()
+        document.getElementById('btn-save-log').style.display = "none";
+        document.getElementById('btn-discard-log').style.display = "none";
     });
 
     $('#btn-download-model').click(function (e) {
@@ -195,6 +252,7 @@ $(document).ready(function (e) {
     })
 
     $('#btn-conn').click(function (e) {
+        document.getElementById("cant-connect").innerHTML = "";
         connect();
     });
 

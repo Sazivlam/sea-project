@@ -5,6 +5,7 @@ class Simulation {
         this.users = [];
         this.id = 1;
         this.isRunning = false;
+        this.isPaused = false;
         this.startTime = undefined
         this.stopTime = undefined
         this.ready = true
@@ -15,20 +16,33 @@ class Simulation {
         this.graph = parser.parse(input);
     }
 
-    executeEvent(event, userName) {
+    executeEvent(event, userID) {
         this.graph.execute(event)
-        this.log.logEvent(userName, event, new Date().toLocaleString(), "test", "undefined")
+        var index = this.users.findIndex((user => user.id == userID));
+        this.log.logEvent(userID, event, new Date().toLocaleString(), this.users[index].name, this.users[index].roles)
     }
 
     startSimulation() {
         this.isRunning = true;
+        this.log.discardLog();
+        this.log.logEvent("ID", "Event", "Date", "Name", "Roles")
         this.startTime = new Date().toLocaleString();
     }
 
     stopSimulation() {
         this.isRunning = false;
+        this.isPaused = false;
         this.stopTime = new Date().toLocaleString();
-        this.log.saveLog()
+    }
+
+    pauseSimulation(){
+        this.isRunning = false;
+        this.isPaused = true;
+    }
+
+    resumeSimulation(){
+        this.isRunning = true;
+        this.isPaused = false;
     }
 
     addUsers(user) {
@@ -46,7 +60,11 @@ class Simulation {
     }
 
     saveLog() {
-        console.log(this.log);
+        this.log.saveLog()
+    }
+
+    discardLog() {
+        this.log.discardLog()
     }
 
     hello() {

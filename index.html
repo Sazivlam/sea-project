@@ -63,15 +63,17 @@
   <div id="server-id"></div>
   <div id="conn-list"></div>
   <p id="cant-start"></p>
+  <p id="cant-connect"></p>
+  <p id="sim-status"></p>
 
 
-  <button class="mdc-button mdc-button--raised" id="btn-time">
+  <button class="mdc-button mdc-button--raised" id="btn-time" style="display: none;">
     <span class="mdc-button__label">Time+1</span></button>&nbsp;
   <br />
 
 
 
-  <button class="mdc-button mdc-button--raised" id="btn-start-sim">
+  <button class="mdc-button mdc-button--raised" id="btn-start-sim" >
     <span class="mdc-button__label">Start Simulation</span></button>&nbsp;
 
 
@@ -84,7 +86,19 @@
   <button id="btn-start-manual-sim">Start manual simulation</button>&nbsp;
   <br />
 
-  <button id="btn-stop-manual-sim">Stop manual simulation</button>&nbsp;
+  <button id="btn-resume-manual-sim" style="display: none;">Resume manual simulation</button>&nbsp;
+  <br />
+
+  <button id="btn-pause-manual-sim" style="display: none;">Pause manual simulation</button>&nbsp;
+  <br />
+
+  <button id="btn-stop-manual-sim" style="display: none;">Stop manual simulation</button>&nbsp;
+  <br />
+
+  <button id="btn-save-log" style="display: none;">Save log</button>&nbsp;
+  <br />
+
+  <button id="btn-discard-log" style="display: none;">Discard log</button>&nbsp;
   <br />
 
   <button id="btn-download-model">Download model</button>&nbsp;
