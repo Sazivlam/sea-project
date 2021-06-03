@@ -5,6 +5,7 @@ class Simulation {
         this.users = [];
         this.id = 1;
         this.isRunning = false;
+        this.isPaused = false;
         this.startTime = undefined
         this.stopTime = undefined
         this.ready = true
@@ -30,15 +31,18 @@ class Simulation {
 
     stopSimulation() {
         this.isRunning = false;
+        this.isPaused = false;
         this.stopTime = new Date().toLocaleString();
     }
 
     pauseSimulation(){
         this.isRunning = false;
+        this.isPaused = true;
     }
 
     resumeSimulation(){
         this.isRunning = true;
+        this.isPaused = false;
     }
 
     addUsers(user) {

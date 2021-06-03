@@ -75,7 +75,7 @@ app.peer.on('connection',
         //New client connects
         app.conn.on('open', function (incomingPeerId) {
             // console.log("New client connects");
-            if (sim.isRunning){
+            if (sim.isRunning || sim.isPaused){
                 c.send({ type: 'simRunningServer' })
             }else{
                 if (!client) {
