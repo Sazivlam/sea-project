@@ -27,10 +27,10 @@ html, body {
 }
 
 #iter {
-    margin-right:15%; 
     
-    float:right;
-    float: top;
+    float : right; 
+    float : top;
+    overflow: hidden; 
     
 
 }
