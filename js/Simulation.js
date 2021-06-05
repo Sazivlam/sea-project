@@ -25,7 +25,8 @@ class Simulation {
     startSimulation() {
         this.isRunning = true;
         this.log.discardLog();
-        this.log.logEvent("ID", "Event", "Date", "Name", "Roles")
+        this.log.logEvent("ID", "Event", "Date", "Name", "Roles");
+        this.log.newTrace("Nyt trace");
         this.startTime = new Date().toLocaleString();
     }
 
