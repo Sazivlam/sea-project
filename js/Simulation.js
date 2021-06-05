@@ -19,13 +19,13 @@ class Simulation {
     executeEvent(event, userID) {
         this.graph.execute(event)
         var index = this.users.findIndex((user => user.id == userID));
-        this.log.logEvent(userID, event, new Date().toLocaleString(), this.users[index].name, this.users[index].roles)
+        this.log.logEvent(userID, this.users[index].name, event, new Date().toLocaleString(), this.users[index].roles)
     }
 
     startSimulation() {
         this.isRunning = true;
         this.log.discardLog();
-        this.log.logEvent("ID", "Event", "Date", "Name", "Roles");
+        this.log.logEvent("ID", "Name", "Event", "Date", "Roles");
         this.log.newTrace("Nyt trace");
         this.startTime = new Date().toLocaleString();
     }
