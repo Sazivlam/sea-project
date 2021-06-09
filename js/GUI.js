@@ -74,6 +74,13 @@ function handleEventButtonClick(buttondId, userID, updateOther = false, excludeF
         if (updateOther) {
             updateOthers({ type: 'eventButton', id: buttondId, data: userID }, excludeFromUpdate)
         }
+        var today = new Date();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var myIDD = localStorage.getItem("myID");  
+        iterations.push("Time : " + time +  ", User ID :" + userID +  " , Executed Event: " + buttondId +  "<br />")
+
+        document.getElementById("iter").innerHTML = iterations.join("");
+
     }
     fillDcrTable(sim.graph.status());
 }
