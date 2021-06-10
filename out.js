@@ -2842,7 +2842,7 @@
       updateOthers({ type: "newUser", id: user2 }, excludeFromUpdate);
     }
   }
-  function handleManualSimButtonClick2(buttonID, updateOther = false, excludeFromUpdate = null) {
+  function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == "btn-start-manual-sim") {
       document.getElementById("sim-status").innerHTML = "Simulation running.";
       if (server || !server && !client) {
@@ -2889,7 +2889,7 @@
       updateOthers({ type: "manualSimButton", id: buttonID }, excludeFromUpdate);
     }
   }
-  function handleSubmitNameButton2(name = null, id = null, updateOther = false, excludeFromUpdate = null) {
+  function handleSubmitNameButton(name = null, id = null, updateOther = false, excludeFromUpdate = null) {
     if (name.trim().length == 0) {
       document.getElementById("input-error").innerHTML = "Name must not be empty.</br>";
     } else {
@@ -2907,7 +2907,7 @@
       }
     }
   }
-  function handleRoleSubmitButton2(robot2, human2, id = null, updateOther = false, excludeFromUpdate = null) {
+  function handleRoleSubmitButton(robot2, human2, id = null, updateOther = false, excludeFromUpdate = null) {
     if (!human2 && !robot2) {
       document.getElementById("input-error").innerHTML = "At least one role must be selected.</br>";
     } else {
@@ -2956,17 +2956,17 @@
         document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
       } else {
         document.getElementById("cant-start").innerHTML = "";
-        handleManualSimButtonClick2(this.id, true, myId);
+        handleManualSimButtonClick(this.id, true, myId);
       }
     });
     $("#btn-stop-manual-sim").click(function(e2) {
-      handleManualSimButtonClick2(this.id, true, myId);
+      handleManualSimButtonClick(this.id, true, myId);
     });
     $("#btn-pause-manual-sim").click(function(e2) {
-      handleManualSimButtonClick2(this.id, true, myId);
+      handleManualSimButtonClick(this.id, true, myId);
     });
     $("#btn-resume-manual-sim").click(function(e2) {
-      handleManualSimButtonClick2(this.id, true, myId);
+      handleManualSimButtonClick(this.id, true, myId);
     });
     $("#btn-save-log").click(function(e2) {
       sim.saveLog();
@@ -2986,12 +2986,12 @@
     });
     $("#btn-subname").click(function(e2) {
       var name = document.getElementById("name-input-id").value;
-      handleSubmitNameButton2(name, myId, true, myId);
+      handleSubmitNameButton(name, myId, true, myId);
     });
     $("#btn-role").click(function(e2) {
       var robot2 = document.getElementById("robot").checked;
       var human2 = document.getElementById("human").checked;
-      handleRoleSubmitButton2(robot2, human2, myId, true, myId);
+      handleRoleSubmitButton(robot2, human2, myId, true, myId);
     });
     $("#ta-dcr").keyup(function(e2) {
       handleTextAreaChange(true, myId);

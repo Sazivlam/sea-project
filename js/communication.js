@@ -1,5 +1,5 @@
 import { User } from "./Simulation"
-import {handleNewUser, handleEventButtonClick, handleTextAreaChange} from "./GUI"
+import {handleNewUser, handleEventButtonClick, handleTextAreaChange, handleRoleSubmitButton, handleSubmitNameButton, handleManualSimButtonClick} from "./GUI"
 var app = {};
 var connections = [];
 // Need to know initial state to which apply all the following updates

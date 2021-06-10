@@ -101,7 +101,7 @@ export function handleNewUser(user, updateOther = false, excludeFromUpdate = nul
     }
 }
 
-function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
+export function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == 'btn-start-manual-sim') {
         document.getElementById("sim-status").innerHTML = "Simulation running.";
         if (server || (!server && !client)) {
@@ -150,7 +150,7 @@ function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUp
     }
 }
 
-function handleSubmitNameButton(name = null, id = null, updateOther = false, excludeFromUpdate = null) {
+export function handleSubmitNameButton(name = null, id = null, updateOther = false, excludeFromUpdate = null) {
     if (name.trim().length == 0) {
         document.getElementById("input-error").innerHTML = "Name must not be empty.</br>";
     } else {
@@ -173,7 +173,7 @@ function handleSubmitNameButton(name = null, id = null, updateOther = false, exc
 
 }
 
-function handleRoleSubmitButton(robot, human, id = null, updateOther = false, excludeFromUpdate = null) {
+export function handleRoleSubmitButton(robot, human, id = null, updateOther = false, excludeFromUpdate = null) {
     if (!human && !robot) {
         document.getElementById("input-error").innerHTML = "At least one role must be selected.</br>";
     } else {
