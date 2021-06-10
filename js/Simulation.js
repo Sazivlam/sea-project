@@ -1,5 +1,5 @@
 import Log from "./Log/LogObject"
-import parser from "./dcr_parser"
+import {parser} from "./dcr_parser"
 export default class Simulation {
 
     constructor(input) {

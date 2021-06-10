@@ -361,7 +361,7 @@
   };
 
   // js/dcr_parser.js
-  var dcr_parser_default = parser = function() {
+  var parser = function() {
     "use strict";
     function peg$subclass(child, parent) {
       function ctor() {
@@ -2373,7 +2373,7 @@
   // js/Simulation.js
   var Simulation = class {
     constructor(input) {
-      this.graph = dcr_parser_default.parse(input);
+      this.graph = parser.parse(input);
       this.users = [];
       this.id = 1;
       this.isRunning = false;
@@ -2384,7 +2384,7 @@
       this.log = new Log();
     }
     changeGraph(input) {
-      this.graph = dcr_parser_default.parse(input);
+      this.graph = parser.parse(input);
     }
     executeEvent(event, userID) {
       this.graph.execute(event);

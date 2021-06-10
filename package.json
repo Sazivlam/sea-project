@@ -2,7 +2,6 @@
   "name": "sea-project",
   "version": "1.0.0",
   "description": "Hello guys! This a test commit. i hate javascript!  WHY?",
-  "main": "index.js",
   "scripts": {
     "test": "jest",
     "build": "esbuild js/GUI.js --bundle --outfile=out.js",
@@ -18,14 +17,20 @@
     "url": "https://github.com/Johanpdrsn/sea-project/issues"
   },
   "homepage": "https://github.com/Johanpdrsn/sea-project#readme",
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    }
+  },
   "devDependencies": {
-    "@types/node": "^15.0.2",
-    "@typescript-eslint/eslint-plugin": "^4.22.1",
-    "@typescript-eslint/parser": "^4.22.1",
     "eslint": "^7.25.0"
   },
   "dependencies": {
-    "esbuild": "^0.12.8"
+    "@babel/preset-env": "^7.14.5",
+    "babel-jest": "^27.0.2",
+    "esbuild": "^0.12.8",
+    "jest": "^27.0.4"
   },
   "type": "module"
 }
