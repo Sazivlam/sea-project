@@ -1,5 +1,5 @@
 class Entry {
-    constructor(id, username, eventName, timestamp, roles, trace) {
+    constructor(trace, id, username, eventName, timestamp, roles) {
         this.Id = id;
         this.UserName = username;
         this.EventName = eventName;
@@ -10,17 +10,10 @@ class Entry {
 
 
     toString() {
-        return "(" + this.Id + "," + this.UserName + "," + this.EventName + "," + this.Timestamp + ", [" + this.Roles + "]," + ")";
+        return "(" + this.Trace + "," + this.Id + "," + this.UserName + "," + this.EventName + "," + this.Timestamp + ", [" + this.Roles + "]," + ")";
     }
 
     toCsv() {
-        if (this.Trace == true)
-        {
-            return ["Trace: " + this.Id]
-        }
-        else 
-        {
-            return [this.Id, this.UserName, this.EventName, this.Timestamp, "[" + this.Roles + "]"];
-        }
+        return [this.Trace, this.Id, this.UserName, this.EventName, this.Timestamp, "[" + this.Roles + "]"];
     }
 }

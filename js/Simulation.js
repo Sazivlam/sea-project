@@ -16,17 +16,16 @@ class Simulation {
         this.graph = parser.parse(input);
     }
 
-    executeEvent(event, userID) {
+    executeEvent(trace, event, userID) {
         this.graph.execute(event)
         var index = this.users.findIndex((user => user.id == userID));
-        this.log.logEvent(userID, this.users[index].name, event, new Date().toLocaleString(), this.users[index].roles)
+        this.log.logEvent(trace, userID, this.users[index].name, event, new Date().toLocaleString(), this.users[index].roles)
     }
 
     startSimulation() {
         this.isRunning = true;
         this.log.discardLog();
-        this.log.logEvent("ID", "Name", "Event", "Date", "Roles");
-        this.log.newTrace("Nyt trace");
+        this.log.logEvent("Trace","ID", "Name", "Event", "Date", "Roles");
         this.startTime = new Date().toLocaleString();
     }
 
