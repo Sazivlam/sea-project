@@ -1,4 +1,5 @@
-class Log {
+import Entry from "./LogEntry"
+export default class Log {
     constructor() {
 
         //Singleton-pattern
@@ -61,3 +62,4 @@ class Log {
         link.click(); // This will download the data file named "my_data.csv".
     }
 }
+
