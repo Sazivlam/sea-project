@@ -1,5 +1,5 @@
 // The download function takes a string, the filename and mimeType as parameters
-function download(content, fileName, mimeType) {
+export default function download(content, fileName, mimeType) {
     var a = document.createElement('a');
     mimeType = mimeType || 'application/octet-stream';
 

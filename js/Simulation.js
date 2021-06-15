@@ -1,4 +1,6 @@
-class Simulation {
+import Log from "./Log/LogObject"
+import {parser} from "./dcr_parser"
+export default class Simulation {
 
     constructor(input) {
         this.graph = parser.parse(input);
@@ -79,7 +81,7 @@ class Simulation {
 
 
 
-class User {
+export class User {
     constructor(id, name, roles) {
         this.id = id;
         this.name = name;

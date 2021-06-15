@@ -1,4 +1,4 @@
-var dynamicTable = (function() {
+export var dynamicTable = (function() {
     
     var _tableId, _table, 
         _fields, _headers, 
