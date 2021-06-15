@@ -77,13 +77,16 @@ function handleEventButtonClick(buttondId, userID, updateOther = false, excludeF
         var today = new Date();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var myIDD = localStorage.getItem("myID");  
-        iterations.push("Time : " + time +  ", User ID :" + userID +  " , Executed Event: " + buttondId +  "<br />")
+        var index = sim.users.findIndex((user => user.id == userID));
+        iterations.push("User ID: " + userID + ", Name: " + sim.users[index].name + ", Executed Event: " + buttondId + ", Time: " + new Date().toLocaleTimeString() + "<br />")
+       // iterations.push("Name :"+ username + role +  "Time : " + time +  ", User ID :" + userID +  " , Executed Event: " + buttondId +  "<br />")
 
         document.getElementById("iter").innerHTML = iterations.join("");
 
     }
     fillDcrTable(sim.graph.status());
 }
+
 
 function handleNewUser(user, updateOther = false, excludeFromUpdate = null) {
     sim.addUsers(user);
@@ -95,6 +98,7 @@ function handleNewUser(user, updateOther = false, excludeFromUpdate = null) {
 function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == 'btn-start-manual-sim') {
         document.getElementById("sim-status").innerHTML = "Simulation running.";
+        document.getElementById("ta-dcr").disabled = true;
         if(server || (!server && !client)){
             document.getElementById('btn-pause-manual-sim').style.display = "block";
             document.getElementById('btn-stop-manual-sim').style.display = "block";
@@ -108,6 +112,7 @@ function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUp
         sim.startSimulation()
     } else if (buttonID == 'btn-stop-manual-sim') {
         if(server || (!server && !client)){
+            document.getElementById("ta-dcr").disabled = false;
             document.getElementById('btn-pause-manual-sim').style.display = "none";
             document.getElementById('btn-stop-manual-sim').style.display = "none";
             document.getElementById('btn-start-manual-sim').style.display = "block";
@@ -228,11 +233,14 @@ $(document).ready(function (e) {
         }else{
             document.getElementById("cant-start").innerHTML = "";
             handleManualSimButtonClick(this.id, true, myId);
+            document.getElementById("ta-dcr").disabled = true;
         }
     });
 
     $('#btn-stop-manual-sim').click(function (e) {
+        document.getElementById("ta-dcr").disabled = false;
         handleManualSimButtonClick(this.id, true, myId);
+        
     });
 
     $('#btn-pause-manual-sim').click(function (e) {
@@ -281,6 +289,7 @@ $(document).ready(function (e) {
     try {
         var x = document.getElementById("ta-dcr");
         sim = new Simulation(x.value)
+        
 
         fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
