@@ -34,6 +34,22 @@
       <span class="mdc-button__label">Connect</span> </button>
   </div>
 
+  <div id="trace-input-block" style="display: none;">
+    <div id="trace-input-text">Enter number of traces</div>
+    <input id="trace-input-id" type="number">
+  
+    <button class="mdc-button mdc-button--raised" id="btn-trace-submit">
+      <span class="mdc-button__label">Submit</span> </button>
+  </div>
+
+  <div id="iter-input-block" style="display: none;">
+    <div id="iter-input-text">Enter number of iterations</div>
+    <input id="iter-input-id" type="number">
+  
+    <button class="mdc-button mdc-button--raised" id="btn-iter-submit">
+      <span class="mdc-button__label">Submit</span> </button>
+  </div>
+
   <div id="name-input-block" style="display: none;">
     <div id="name-input-text">Enter your name</div>
     <input id="name-input-id">
@@ -60,23 +76,6 @@
   <p id="cant-connect"></p>
   <p id="sim-status"></p>
 
-
-  <button class="mdc-button mdc-button--raised" id="btn-time" style="display: none;">
-    <span class="mdc-button__label">Time+1</span></button>&nbsp;
-  <br />
-
-
-
-  <button class="mdc-button mdc-button--raised" id="btn-start-sim" >
-    <span class="mdc-button__label">Start Simulation</span></button>&nbsp;
-
-
-
-
-  <button class="mdc-button mdc-button--raised" id="btn-stop-sim">
-    <span class="mdc-button__label">Stop Simulation</span></button>&nbsp;
-  <br />
-
   <button class="mdc-button mdc-button--raised" id="btn-start-manual-sim">Start manual simulation</button>&nbsp;
   <br />
 
@@ -89,6 +88,23 @@
   <button class="mdc-button mdc-button--raised" id="btn-stop-manual-sim" style="display: none;">Stop manual simulation</button>&nbsp;
   <br />
 
+  <button class="mdc-button mdc-button--raised" id="btn-start-auto-sim">
+    <span class="mdc-button__label">Start Auto Simulation</span></button>&nbsp;
+  <br />
+  
+  <button class="mdc-button mdc-button--raised" id="btn-resume-auto-sim" style="display: none;">Resume auto
+    simulation</button>&nbsp;
+  <br />
+  
+  <button class="mdc-button mdc-button--raised" id="btn-pause-auto-sim" style="display: none;">Pause auto
+    simulation</button>&nbsp;
+  <br />
+  
+  
+  <button class="mdc-button mdc-button--raised" id="btn-stop-auto-sim" style="display: none;">
+    <span class="mdc-button__label">Stop Auto Simulation</span></button>&nbsp;
+  <br />
+  
   <button class="mdc-button mdc-button--raised" id="btn-save-log" style="display: none;">Save log</button>&nbsp;
   <br />
 

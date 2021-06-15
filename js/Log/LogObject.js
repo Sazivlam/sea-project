@@ -17,19 +17,11 @@ export default class Log {
             console.log(entryRow.toString());
         });
     }
-
-    // Add a tracing Line
-    newTrace(traceName)
-    {
-        var whatever = new Entry(traceName,"", "", "", "", true);
-        this.Entries.push(whatever);
-    }
-    
     
     // To log events, whenever anything is done in the graph.
-    logEvent(id, username, eventName, timestamp, role)
+    logEvent(trace, id, username, eventName, timestamp, role)
     {
-        var logEntry = new Entry(id, username, eventName, timestamp, role, false);
+        var logEntry = new Entry(trace, id, username, eventName, timestamp, role);
         this.Entries.push(logEntry);
     }
 
