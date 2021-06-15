@@ -18,14 +18,17 @@
 
   <script src="out.js"></script>
 
-  <p id="iter"></p>
+  
+  <div id="iter"></div>
   <table  id="task-table"></table>
+
   
   <br />
   <p id="accepting"></p>
 
   <br />
-
+  <div id= "myinfo">
+  <p > <h2> My Information : </h2> </p>
   <div id="peer-input-block">
     <div id="peer-input-text">Enter server ID or wait for client to connect</div>
     <input id="peer-input-id">
@@ -76,16 +79,21 @@
   <p id="cant-connect"></p>
   <p id="sim-status"></p>
 
+</div>
+
+  <div id="start_sim_buttons">
   <button class="mdc-button mdc-button--raised" id="btn-start-manual-sim">Start manual simulation</button>&nbsp;
+  <br />
+  <button class="mdc-button mdc-button--raised" id="btn-stop-manual-sim" style="display: none;" >Stop manual simulation</button>&nbsp;
   <br />
 
   <button class="mdc-button mdc-button--raised" id="btn-resume-manual-sim" style="display: none;">Resume manual simulation</button>&nbsp;
   <br />
 
   <button class="mdc-button mdc-button--raised" id="btn-pause-manual-sim" style="display: none;">Pause manual simulation</button>&nbsp;
-  <br />
+  
 
-  <button class="mdc-button mdc-button--raised" id="btn-stop-manual-sim" style="display: none;">Stop manual simulation</button>&nbsp;
+  
   <br />
 
   <button class="mdc-button mdc-button--raised" id="btn-start-auto-sim">
@@ -113,8 +121,11 @@
 
   <button class="mdc-button mdc-button--raised" id="btn-download-model">Download model</button>&nbsp;
   <br />
+</div>
 
-  <textarea id="ta-dcr" rows="20" cols="150">
+
+
+  <textarea id="ta-dcr" rows="20" cols="150" >
 A(0,0,0)        
 B(0,1,1)        
 A -->* B

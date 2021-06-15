@@ -10,11 +10,25 @@ html, body {
     width:40%; 
     margin-left:15%; 
     margin-right:15%;
+
+
+
+
+}
+#ta-dcr {
+    width: 600px;
+    height: 200px;
+}
+p ,div {
+    font-family: Helvetica, Arial, sans-serif;
 }
 /* #peer-input-block , #my-id , #conn-status , #server-id , #conn-list {
     text-align:center;
 }
 */
+.important{
+    font-weight: bold;
+}
 
 #accepting {
     width:40%; 
@@ -35,13 +49,53 @@ html, body {
 
 }
 
+#log_text{
+
+    float: right;
+    
+    
+}
+
 #task-table td {
     text-align: center;
     padding: 8px;
     border: 1px solid black;   
 }
 
+#start_sim_buttons{
+    float : right; 
+    float : top 
+   
+
+}
+
+#myinfo, #iter{ 
+    width: 300px;
+    border: 3px solid black;
+    padding: 30px;
+    margin: 20px;
+    
+  }
+
+  #iter{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height:600px;
+    width: 600px;
+    
+
+
+  }
+
 button {margin: 20px;}
+
+body{
+    background: #FFEFBA;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+     }
+
 
 #task-table tr:nth-child(odd){background-color: #b8f7a8;}
 
