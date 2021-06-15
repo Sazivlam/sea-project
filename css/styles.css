@@ -64,8 +64,7 @@ p ,div {
 
 #start_sim_buttons{
     float : right; 
-    float : top 
-   
+    float : top;
 
 }
 
@@ -82,8 +81,6 @@ p ,div {
     overflow-y: auto;
     height:600px;
     width: 600px;
-    
-
 
   }
 
