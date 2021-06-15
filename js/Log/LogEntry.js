@@ -1,4 +1,4 @@
-class Entry {
+export default class Entry {
     constructor(trace, id, username, eventName, timestamp, roles) {
         this.Id = id;
         this.UserName = username;
