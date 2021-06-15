@@ -1,7 +1,7 @@
 (() => {
   // js/Log/LogEntry.js
   var Entry = class {
-    constructor(id, username, eventName, timestamp, roles, trace) {
+    constructor(trace, id, username, eventName, timestamp, roles) {
       this.Id = id;
       this.UserName = username;
       this.EventName = eventName;
@@ -10,14 +10,10 @@
       this.Trace = trace;
     }
     toString() {
-      return "(" + this.Id + "," + this.UserName + "," + this.EventName + "," + this.Timestamp + ", [" + this.Roles + "],)";
+      return "(" + this.Trace + "," + this.Id + "," + this.UserName + "," + this.EventName + "," + this.Timestamp + ", [" + this.Roles + "],)";
     }
     toCsv() {
-      if (this.Trace == true) {
-        return ["Trace: " + this.Id];
-      } else {
-        return [this.Id, this.UserName, this.EventName, this.Timestamp, "[" + this.Roles + "]"];
-      }
+      return [this.Trace, this.Id, this.UserName, this.EventName, this.Timestamp, "[" + this.Roles + "]"];
     }
   };
 
@@ -35,12 +31,8 @@
         console.log(entryRow.toString());
       });
     }
-    newTrace(traceName) {
-      var whatever = new Entry(traceName, "", "", "", "", true);
-      this.Entries.push(whatever);
-    }
-    logEvent(id, username, eventName, timestamp, role) {
-      var logEntry = new Entry(id, username, eventName, timestamp, role, false);
+    logEvent(trace, id, username, eventName, timestamp, role) {
+      var logEntry = new Entry(trace, id, username, eventName, timestamp, role);
       this.Entries.push(logEntry);
     }
     discardLog() {
@@ -2386,16 +2378,15 @@
     changeGraph(input) {
       this.graph = parser.parse(input);
     }
-    executeEvent(event, userID) {
+    executeEvent(trace, event, userID) {
       this.graph.execute(event);
       var index2 = this.users.findIndex((user2) => user2.id == userID);
-      this.log.logEvent(userID, this.users[index2].name, event, new Date().toLocaleString(), this.users[index2].roles);
+      this.log.logEvent(trace, userID, this.users[index2].name, event, new Date().toLocaleString(), this.users[index2].roles);
     }
     startSimulation() {
       this.isRunning = true;
       this.log.discardLog();
-      this.log.logEvent("ID", "Name", "Event", "Date", "Roles");
-      this.log.newTrace("Nyt trace");
+      this.log.logEvent("Trace", "ID", "Name", "Event", "Date", "Roles");
       this.startTime = new Date().toLocaleString();
     }
     stopSimulation() {
@@ -2542,9 +2533,8 @@
         handleNewUser(new User(app.conn.peer, "server", ["Robot", "Human"]), false, myId);
         if (!connected) {
           document.getElementById("conn-status").innerHTML = "Connection established as Client";
-          document.getElementById("btn-time").style.display = "none";
-          document.getElementById("btn-start-sim").style.display = "none";
-          document.getElementById("btn-stop-sim").style.display = "none";
+          document.getElementById("btn-start-auto-sim").style.display = "none";
+          document.getElementById("btn-stop-auto-sim").style.display = "none";
           document.getElementById("btn-start-manual-sim").style.display = "none";
           document.getElementById("btn-stop-manual-sim").style.display = "none";
           client = true;
@@ -2607,8 +2597,8 @@
       handleTextAreaChange(updateOthers2, excludeFromUpdate);
     } else if (data.type == "eventButton") {
       handleEventButtonClick(data.id, data.data, updateOthers2, excludeFromUpdate);
-    } else if (data.type == "manualSimButton") {
-      handleManualSimButtonClick(data.id, updateOthers2, excludeFromUpdate);
+    } else if (data.type == "simButton") {
+      handleSimButtonClick(data.id, updateOthers2, excludeFromUpdate);
     } else if (data.type == "newUser") {
       if (!sim.users.some((user2) => user2.id === data.id.id)) {
         sim.addUsers(new User(data.id.id));
@@ -2618,6 +2608,11 @@
         sim.users[index].name = void 0;
         sim.users[index].roles = [];
       }
+    } else if (data.type == "nextTrace") {
+      currentTrace++;
+      currentIter++;
+      iterations = [];
+      document.getElementById("iter").innerHTML = "";
     } else if (data.type == "name") {
       index = sim.users.findIndex((user2) => user2.id == data.id);
       sim.users[index].name = data.data;
@@ -2639,6 +2634,8 @@
       document.getElementById("btn-save-log").style.display = "none";
       document.getElementById("btn-discard-log").style.display = "none";
       document.getElementById("sim-status").style.display = "none";
+      iterations = [];
+      document.getElementById("iter").innerHTML = "";
     } else if (data.type == "simRunningServer") {
       document.getElementById("cant-connect").innerHTML = "Server is currently running a simulation; please connect once it has finished.";
       client = false;
@@ -2762,9 +2759,12 @@
 
   // js/GUI.js
   var taskTable;
-  var isRunning = false;
-  var numIter = 0;
-  var iterations = [];
+  var iterations2 = [];
+  var currentTrace2 = 1;
+  var currentIter2 = 1;
+  var chosenTraces;
+  var chosenIters;
+  var autoFunc;
   function fillDcrTable(status) {
     for (var row of status) {
       row.executed = row.executed ? "V:" + row.lastExecuted : "";
@@ -2783,25 +2783,35 @@
   function updateAccepting(status) {
     document.getElementById("accepting").innerHTML = status ? "Accepting" : "Not accepting";
   }
-  function startSim() {
-    if (isRunning) {
-      numIter++;
-      var names = [];
-      for (var row of sim.graph.status()) {
-        if (row.enabled) {
-          names.push(row.name);
+  function executeRandomEvents() {
+    if (sim.isRunning) {
+      if (currentTrace2 <= chosenTraces) {
+        if (currentIter2 <= chosenIters) {
+          var names = [];
+          for (var row of sim.graph.status()) {
+            if (row.enabled) {
+              names.push(row.name);
+            }
+          }
+          chosenEvent = _.sample(names);
+          handleEventButtonClick(chosenEvent, myId, true, myId);
+          autoFunc = setTimeout(executeRandomEvents, 1e3);
+          currentIter2++;
+        } else {
+          currentIter2 = 1;
+          currentTrace2 += 1;
+          if (currentTrace2 <= chosenTraces) {
+            iterations2 = [];
+            document.getElementById("iter").innerHTML = "";
+            handleNextTrace(true, myId);
+          }
+          autoFunc = setTimeout(executeRandomEvents, 1e3);
         }
+      } else {
+        handleSimButtonClick("btn-stop-auto-sim", true, myId);
       }
-      chosenEvent = _.sample(names);
-      var today = new Date();
-      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      var myIDD = localStorage.getItem("myID");
-      iterations.push("Time : " + time + ", User ID :" + myIDD + " , Executed Event: " + chosenEvent + "<br />");
-      document.getElementById("iter").innerHTML = iterations.join("");
-      sim.graph.timeStep(1);
-      sim.executeEvent(chosenEvent);
-      fillDcrTable(sim.graph.status());
-      setTimeout(startSim, 2e3);
+    } else {
+      autoFunc = setTimeout(executeRandomEvents, 1e3);
     }
   }
   function handleTextAreaChange(updateOther = false, excludeFromUpdate = null) {
@@ -2824,15 +2834,13 @@
   function handleEventButtonClick(buttondId, userID, updateOther = false, excludeFromUpdate = null) {
     if (sim.isRunning) {
       sim.graph.timeStep(1);
-      sim.executeEvent(buttondId, userID);
+      sim.executeEvent(currentTrace2, buttondId, userID);
       if (updateOther) {
         updateOthers({ type: "eventButton", id: buttondId, data: userID }, excludeFromUpdate);
       }
-      var today = new Date();
-      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      var myIDD = localStorage.getItem("myID");
-      iterations.push("Time : " + time + ", User ID :" + userID + " , Executed Event: " + buttondId + "<br />");
-      document.getElementById("iter").innerHTML = iterations.join("");
+      var index2 = sim.users.findIndex((user2) => user2.id == userID);
+      iterations2.push("User ID: " + userID + ", Name: " + sim.users[index2].name + ", Executed Event: " + buttondId + ", Time: " + new Date().toLocaleTimeString() + "<br />");
+      document.getElementById("iter").innerHTML = iterations2.join("");
     }
     fillDcrTable(sim.graph.status());
   }
@@ -2842,25 +2850,77 @@
       updateOthers({ type: "newUser", id: user2 }, excludeFromUpdate);
     }
   }
-  function handleManualSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
+  function handleNextTrace(updateOther = false, excludeFromUpdate = null) {
+    handleTextAreaChange(true, myId);
+    if (updateOther) {
+      updateOthers({ type: "nextTrace" }, excludeFromUpdate);
+    }
+  }
+  function handleSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == "btn-start-manual-sim") {
       document.getElementById("sim-status").innerHTML = "Simulation running.";
+      document.getElementById("ta-dcr").disabled = true;
       if (server || !server && !client) {
         document.getElementById("btn-pause-manual-sim").style.display = "block";
         document.getElementById("btn-stop-manual-sim").style.display = "block";
         document.getElementById("btn-start-manual-sim").style.display = "none";
+        document.getElementById("btn-start-auto-sim").style.display = "none";
       }
       if (!server && !client) {
         document.getElementById("peer-input-block").style.display = "none";
       }
+      iterations2 = [];
+      document.getElementById("iter").innerHTML = "";
       document.getElementById("btn-save-log").style.display = "none";
       document.getElementById("btn-discard-log").style.display = "none";
+      currentTrace2 = 1;
+      currentIter2 = 1;
+      handleTextAreaChange(true, myId);
+      sim.startSimulation();
+    } else if (buttonID == "btn-start-auto-sim") {
+      document.getElementById("sim-status").innerHTML = "Simulation running.";
+      if (server || !server && !client) {
+        document.getElementById("btn-pause-auto-sim").style.display = "block";
+        document.getElementById("btn-stop-auto-sim").style.display = "block";
+        document.getElementById("btn-start-manual-sim").style.display = "none";
+        document.getElementById("btn-start-auto-sim").style.display = "none";
+        executeRandomEvents();
+      }
+      if (!server && !client) {
+        document.getElementById("peer-input-block").style.display = "none";
+      }
+      iterations2 = [];
+      document.getElementById("iter").innerHTML = "";
+      document.getElementById("btn-save-log").style.display = "none";
+      document.getElementById("btn-discard-log").style.display = "none";
+      currentTrace2 = 1;
+      currentIter2 = 1;
+      handleTextAreaChange(true, myId);
       sim.startSimulation();
     } else if (buttonID == "btn-stop-manual-sim") {
       if (server || !server && !client) {
+        document.getElementById("ta-dcr").disabled = false;
         document.getElementById("btn-pause-manual-sim").style.display = "none";
         document.getElementById("btn-stop-manual-sim").style.display = "none";
         document.getElementById("btn-start-manual-sim").style.display = "block";
+        document.getElementById("btn-start-auto-sim").style.display = "block";
+        document.getElementById("btn-resume-manual-sim").style.display = "none";
+      }
+      if (!server && !client) {
+        document.getElementById("peer-input-block").style.display = "block";
+      }
+      document.getElementById("sim-status").innerHTML = "Simulation finished.";
+      document.getElementById("btn-save-log").style.display = "block";
+      document.getElementById("btn-discard-log").style.display = "block";
+      sim.stopSimulation();
+    } else if (buttonID == "btn-stop-auto-sim") {
+      if (server || !server && !client) {
+        document.getElementById("btn-pause-auto-sim").style.display = "none";
+        document.getElementById("btn-stop-auto-sim").style.display = "none";
+        document.getElementById("btn-start-manual-sim").style.display = "block";
+        document.getElementById("btn-start-auto-sim").style.display = "block";
+        document.getElementById("btn-resume-auto-sim").style.display = "none";
+        clearTimeout(autoFunc);
       }
       if (!server && !client) {
         document.getElementById("peer-input-block").style.display = "block";
@@ -2876,6 +2936,14 @@
       }
       document.getElementById("sim-status").innerHTML = "Simulation paused.";
       sim.pauseSimulation();
+    } else if (buttonID == "btn-pause-auto-sim") {
+      if (server || !server && !client) {
+        document.getElementById("btn-resume-auto-sim").style.display = "block";
+        document.getElementById("btn-pause-auto-sim").style.display = "none";
+        clearTimeout(autoFunc);
+      }
+      document.getElementById("sim-status").innerHTML = "Simulation paused.";
+      sim.pauseSimulation();
     } else if (buttonID == "btn-resume-manual-sim") {
       if (server || !server && !client) {
         document.getElementById("btn-resume-manual-sim").style.display = "none";
@@ -2883,10 +2951,18 @@
       }
       document.getElementById("sim-status").innerHTML = "Simulation running.";
       sim.resumeSimulation();
+    } else if (buttonID == "btn-resume-auto-sim") {
+      if (server || !server && !client) {
+        document.getElementById("btn-resume-auto-sim").style.display = "none";
+        document.getElementById("btn-pause-auto-sim").style.display = "block";
+        executeRandomEvents();
+      }
+      document.getElementById("sim-status").innerHTML = "Simulation running.";
+      sim.resumeSimulation();
     }
     fillDcrTable(sim.graph.status());
     if (updateOther) {
-      updateOthers({ type: "manualSimButton", id: buttonID }, excludeFromUpdate);
+      updateOthers({ type: "simButton", id: buttonID }, true, excludeFromUpdate);
     }
   }
   function handleSubmitNameButton(name = null, id = null, updateOther = false, excludeFromUpdate = null) {
@@ -2933,40 +3009,44 @@
   }
   $(document).ready(function(e) {
     taskTable = dynamicTable.config("task-table", ["executed", "included", "pending", "enabled", "name"], ["Executed", "Included", "Pending", "Enabled", "Name"], "There are no items to list...");
-    $("#btn-time").click(function(e2) {
-      sim.graph.timeStep(1);
-      fillDcrTable(sim.graph.status());
-    });
-    $("#btn-start-sim").click(function(e2) {
-      document.getElementById("cant-start").innerHTML = "";
+    $("#btn-start-auto-sim").click(function(e2) {
       if (!sim.checkIfReady()) {
         document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
       } else {
-        document.getElementById("iter").innerHTML = "";
-        isRunning = true;
-        numIter = 0;
-        startSim();
+        document.getElementById("cant-start").innerHTML = "";
+        document.getElementById("peer-input-block").style.display = "none";
+        document.getElementById("trace-input-block").style.display = "block";
+        document.getElementById("btn-start-manual-sim").style.display = "none";
+        document.getElementById("btn-start-auto-sim").style.display = "none";
       }
     });
-    $("#btn-stop-sim").click(function(e2) {
-      isRunning = false;
+    $("#btn-stop-auto-sim").click(function(e2) {
+      handleSimButtonClick(this.id, true, myId);
+    });
+    $("#btn-pause-auto-sim").click(function(e2) {
+      handleSimButtonClick(this.id, true, myId);
+    });
+    $("#btn-resume-auto-sim").click(function(e2) {
+      handleSimButtonClick(this.id, true, myId);
     });
     $("#btn-start-manual-sim").click(function(e2) {
       if (!sim.checkIfReady()) {
         document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
       } else {
         document.getElementById("cant-start").innerHTML = "";
-        handleManualSimButtonClick(this.id, true, myId);
+        handleSimButtonClick(this.id, true, myId);
+        document.getElementById("ta-dcr").disabled = true;
       }
     });
     $("#btn-stop-manual-sim").click(function(e2) {
-      handleManualSimButtonClick(this.id, true, myId);
+      document.getElementById("ta-dcr").disabled = false;
+      handleSimButtonClick(this.id, true, myId);
     });
     $("#btn-pause-manual-sim").click(function(e2) {
-      handleManualSimButtonClick(this.id, true, myId);
+      handleSimButtonClick(this.id, true, myId);
     });
     $("#btn-resume-manual-sim").click(function(e2) {
-      handleManualSimButtonClick(this.id, true, myId);
+      handleSimButtonClick(this.id, true, myId);
     });
     $("#btn-save-log").click(function(e2) {
       sim.saveLog();
@@ -2987,6 +3067,26 @@
     $("#btn-subname").click(function(e2) {
       var name = document.getElementById("name-input-id").value;
       handleSubmitNameButton(name, myId, true, myId);
+    });
+    $("#btn-trace-submit").click(function(e2) {
+      if (document.getElementById("trace-input-id").value < 1 || document.getElementById("trace-input-id").value === void 0) {
+        document.getElementById("input-error").innerHTML = "Minimum number of traces is 1.</br>";
+      } else {
+        document.getElementById("input-error").innerHTML = "";
+        chosenTraces = document.getElementById("trace-input-id").value;
+        document.getElementById("trace-input-block").style.display = "none";
+        document.getElementById("iter-input-block").style.display = "block";
+      }
+    });
+    $("#btn-iter-submit").click(function(e2) {
+      if (document.getElementById("iter-input-id").value < 1 || document.getElementById("iter-input-id").value === void 0) {
+        document.getElementById("input-error").innerHTML = "Minimum number of iterations is 1.</br>";
+      } else {
+        document.getElementById("input-error").innerHTML = "";
+        chosenIters = document.getElementById("iter-input-id").value;
+        document.getElementById("iter-input-block").style.display = "none";
+        handleSimButtonClick("btn-start-auto-sim", true, myId);
+      }
     });
     $("#btn-role").click(function(e2) {
       var robot2 = document.getElementById("robot").checked;

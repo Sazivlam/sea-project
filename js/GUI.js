@@ -94,13 +94,16 @@ export function handleEventButtonClick(buttondId, userID, updateOther = false, e
         if (updateOther) {
             updateOthers({ type: 'eventButton', id: buttondId, data: userID }, excludeFromUpdate)
         }
+
         var index = sim.users.findIndex((user => user.id == userID));
         iterations.push("User ID: " + userID + ", Name: " + sim.users[index].name + ", Executed Event: " + buttondId + ", Time: " + new Date().toLocaleTimeString() + "<br />")
+
         document.getElementById("iter").innerHTML = iterations.join("");
 
     }
     fillDcrTable(sim.graph.status());
 }
+
 
 export function handleNewUser(user, updateOther = false, excludeFromUpdate = null) {
     sim.addUsers(user);
@@ -119,7 +122,8 @@ export function handleNextTrace(updateOther = false, excludeFromUpdate = null) {
 export function handleSimButtonClick(buttonID, updateOther = false, excludeFromUpdate = null) {
     if (buttonID == 'btn-start-manual-sim') {
         document.getElementById("sim-status").innerHTML = "Simulation running.";
-        if (server || (!server && !client)) {
+        document.getElementById("ta-dcr").disabled = true;
+        if(server || (!server && !client)){
             document.getElementById('btn-pause-manual-sim').style.display = "block";
             document.getElementById('btn-stop-manual-sim').style.display = "block";
             document.getElementById('btn-start-manual-sim').style.display = "none";
@@ -157,7 +161,8 @@ export function handleSimButtonClick(buttonID, updateOther = false, excludeFromU
         handleTextAreaChange(true, myId)
         sim.startSimulation()
     } else if (buttonID == 'btn-stop-manual-sim') {
-        if (server || (!server && !client)) {
+        if(server || (!server && !client)){
+            document.getElementById("ta-dcr").disabled = false;
             document.getElementById('btn-pause-manual-sim').style.display = "none";
             document.getElementById('btn-stop-manual-sim').style.display = "none";
             document.getElementById('btn-start-manual-sim').style.display = "block";
@@ -315,12 +320,16 @@ $(document).ready(function (e) {
         } else {
             document.getElementById("cant-start").innerHTML = "";
             handleSimButtonClick(this.id, true, myId);
+            document.getElementById("ta-dcr").disabled = true;
+
         }
     });
 
     $('#btn-stop-manual-sim').click(function (e) {
+
+        document.getElementById("ta-dcr").disabled = false;
         handleSimButtonClick(this.id, true, myId);
-    });
+  });
 
     $('#btn-pause-manual-sim').click(function (e) {
         handleSimButtonClick(this.id, true, myId);
@@ -390,6 +399,7 @@ $(document).ready(function (e) {
     try {
         var x = document.getElementById("ta-dcr");
         sim = new Simulation(x.value)
+        
 
         fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
