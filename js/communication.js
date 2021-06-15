@@ -44,7 +44,6 @@ function connect() {
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
-                document.getElementById('btn-time').style.display = "none";
                 document.getElementById('btn-start-auto-sim').style.display = "none";
                 document.getElementById('btn-stop-auto-sim').style.display = "none";
                 document.getElementById('btn-start-manual-sim').style.display = "none";
