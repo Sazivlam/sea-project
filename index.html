@@ -12,21 +12,14 @@
 </head>
 
 <body>
-  <script src="js/Log/LogObject.js"></script>
-  <script src="js/Log/LogEntry.js"></script>
   <script src="js/lodash.js"></script>
   <script src="js/jQuery.js"></script>
   <script src="js/peerjs.min.js"></script>
-  <script src="js/dynamic_table.js"></script>
-  <script src="js/dcr.js"></script>
-  <script src="js/dcr_parser.js"></script>
-  <script src="js/communication.js"></script>
-  <script src="js/Simulation.js"></script>
-  <script src="js/GUI.js"></script>
-  <script src="js/utilities.js"></script>
-  
+
 
   <div id="iter" > </div>
+
+  <script src="out.js"></script>
 
 
   <table  id="task-table"></table>
@@ -44,6 +37,22 @@
 
     <button class="mdc-button mdc-button--raised" id="btn-conn">
       <span class="mdc-button__label">Connect</span> </button>
+  </div>
+
+  <div id="trace-input-block" style="display: none;">
+    <div id="trace-input-text">Enter number of traces</div>
+    <input id="trace-input-id" type="number">
+  
+    <button class="mdc-button mdc-button--raised" id="btn-trace-submit">
+      <span class="mdc-button__label">Submit</span> </button>
+  </div>
+
+  <div id="iter-input-block" style="display: none;">
+    <div id="iter-input-text">Enter number of iterations</div>
+    <input id="iter-input-id" type="number">
+  
+    <button class="mdc-button mdc-button--raised" id="btn-iter-submit">
+      <span class="mdc-button__label">Submit</span> </button>
   </div>
 
   <div id="name-input-block" style="display: none;">
@@ -70,7 +79,9 @@
   <div id="conn-list"></div>
   <p id="cant-start"></p>
   <p id="cant-connect"></p>
-  <p class= "important" id="sim-status"></p>
+  
+
+ <p class= "important" id="sim-status"></p>
 </div>
 <div id="start_sim_buttons">
   <button class="mdc-button mdc-button--raised" id="btn-time" style="display: none;">
@@ -89,6 +100,7 @@
     <span class="mdc-button__label">Stop Automatic Simulation</span></button>&nbsp;
   <br />
 
+
   <button class="mdc-button mdc-button--raised" id="btn-start-manual-sim">Start manual simulation</button>&nbsp;
   <br />
   <button class="mdc-button mdc-button--raised" id="btn-stop-manual-sim" style="display: none;" >Stop manual simulation</button>&nbsp;
@@ -103,6 +115,23 @@
   
   <br />
 
+  <button class="mdc-button mdc-button--raised" id="btn-start-auto-sim">
+    <span class="mdc-button__label">Start Auto Simulation</span></button>&nbsp;
+  <br />
+  
+  <button class="mdc-button mdc-button--raised" id="btn-resume-auto-sim" style="display: none;">Resume auto
+    simulation</button>&nbsp;
+  <br />
+  
+  <button class="mdc-button mdc-button--raised" id="btn-pause-auto-sim" style="display: none;">Pause auto
+    simulation</button>&nbsp;
+  <br />
+  
+  
+  <button class="mdc-button mdc-button--raised" id="btn-stop-auto-sim" style="display: none;">
+    <span class="mdc-button__label">Stop Auto Simulation</span></button>&nbsp;
+  <br />
+  
   <button class="mdc-button mdc-button--raised" id="btn-save-log" style="display: none;">Save log</button>&nbsp;
   <br />
 

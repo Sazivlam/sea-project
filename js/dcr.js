@@ -1,4 +1,3 @@
-"use strict";
 /*
  Basic DCR Engine supporting:
  - Condition, response, include, exclude, milestone
@@ -105,7 +104,7 @@ class Event {
         return (!(this.marking.pending && this.marking.included));
     }
 }
-class DCRGraph {
+export default class DCRGraph {
     constructor(pg) {
         this.parent = undefined;
         this.parentGraphTemp = undefined;

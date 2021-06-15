@@ -1,3 +1,5 @@
+import { User } from "./Simulation"
+import {handleNewUser, handleEventButtonClick, handleTextAreaChange, handleRoleSubmitButton, handleSubmitNameButton, handleSimButtonClick, handleNextTrace} from "./GUI"
 var app = {};
 var connections = [];
 // Need to know initial state to which apply all the following updates
@@ -13,11 +15,11 @@ app.peer = new Peer();
 //     port: 9000,
 //     path: '/myapp'
 // });
-var connected = false;
-var server = false;
-var client = false;
+export var connected = false;
+export var server = false;
+export var client = false;
 const connCheckDelayTimeMs = 300;
-var myId = null;
+export var myId = null;
 
 //Set my id
 app.peer.on('open', function (id) {
@@ -27,26 +29,25 @@ app.peer.on('open', function (id) {
     document.getElementById('my-id').innerHTML =
         "<div>My ID: </div>" +
         "<div id=id_num>" + myId + "</div><br/>";
-        localStorage.setItem("myID", myId); 
+    localStorage.setItem("myID", myId);
 });
 
 
 
 //Client part
-function connect() {
+export function connect() {
     app.conn = app.peer.connect(document.getElementById('peer-input-id').value);
     //Connect to server
     app.conn.on('open', function () {
         if (!connected && !server) {
             // console.log("Client: New Connection");
             connections.push(app.conn);
-            handleNewUser(new User(app.conn.peer, "server",  ["Robot", "Human"]), false, myId)
+            handleNewUser(new User(app.conn.peer, "server", ["Robot", "Human"]), false, myId)
             //Only for the first connection
             if (!connected) {
                 document.getElementById('conn-status').innerHTML = "Connection established as Client";
-                document.getElementById('btn-time').style.display = "none";
-                document.getElementById('btn-start-sim').style.display = "none";
-                document.getElementById('btn-stop-sim').style.display = "none";
+                document.getElementById('btn-start-auto-sim').style.display = "none";
+                document.getElementById('btn-stop-auto-sim').style.display = "none";
                 document.getElementById('btn-start-manual-sim').style.display = "none";
                 document.getElementById('btn-stop-manual-sim').style.display = "none";
                 client = true;
@@ -75,9 +76,9 @@ app.peer.on('connection',
         //New client connects
         app.conn.on('open', function (incomingPeerId) {
             // console.log("New client connects");
-            if (sim.isRunning || sim.isPaused){
+            if (sim.isRunning || sim.isPaused) {
                 c.send({ type: 'simRunningServer' })
-            }else{
+            } else {
                 if (!client) {
                     // console.log("Server: New Connection");
                     connections.push(c);
@@ -111,7 +112,7 @@ function sendUpdates(c) {
     if (c && c.open) c.send({ type: 'updateHistory', data: updates })
 }
 
-function updateOthers(stateUpdate, excludeFromUpdate = null) {
+export function updateOthers(stateUpdate, excludeFromUpdate = null) {
     //Push update to updates list
     updates.push(stateUpdate);
 
@@ -129,30 +130,35 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
         handleTextAreaChange(updateOthers, excludeFromUpdate);
     } else if (data.type == 'eventButton') {
         handleEventButtonClick(data.id, data.data, updateOthers, excludeFromUpdate);
-    } else if (data.type == 'manualSimButton') {
-        handleManualSimButtonClick(data.id, updateOthers, excludeFromUpdate)
+    } else if (data.type == 'simButton') {
+        handleSimButtonClick(data.id, updateOthers, excludeFromUpdate)
     } else if (data.type == 'newUser') {
         //Add only if not in array
         if (!sim.users.some(user => user.id === data.id.id)) {
             sim.addUsers(new User(data.id.id));
         }
-        if(sim.users.some(user => user.id === data.id.id) && data.id.id === myId && client){
+        if (sim.users.some(user => user.id === data.id.id) && data.id.id === myId && client) {
             index = sim.users.findIndex((user => user.id == data.id.id));
             sim.users[index].name = undefined
             sim.users[index].roles = [];
         }
-    } else if (data.type == 'name') {
+    } else if (data.type == 'nextTrace') {
+        currentTrace ++
+        currentIter ++
+        iterations = [];
+        document.getElementById("iter").innerHTML = "";
+    }else if (data.type == 'name') {
         index = sim.users.findIndex((user => user.id == data.id));
         sim.users[index].name = data.data;
         handleSubmitNameButton(data.data, data.id, updateOthers, excludeFromUpdate)
-    }else if (data.type == 'roles') {
+    } else if (data.type == 'roles') {
         index = sim.users.findIndex((user => user.id == data.id));
         sim.users[index].roles = data.data;
 
-        if(data.data.includes("Robot")){
+        if (data.data.includes("Robot")) {
             robot = true
         }
-        if(data.data.includes("Human")){
+        if (data.data.includes("Human")) {
             human = true
         }
 
@@ -164,7 +170,9 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
         document.getElementById('btn-save-log').style.display = "none";
         document.getElementById('btn-discard-log').style.display = "none";
         document.getElementById('sim-status').style.display = "none";
-    } else if (data.type == 'simRunningServer'){
+        iterations = [];
+        document.getElementById("iter").innerHTML = "";
+    } else if (data.type == 'simRunningServer') {
         document.getElementById("cant-connect").innerHTML = "Server is currently running a simulation; please connect once it has finished.";
         client = false;
         connected = false;
@@ -194,7 +202,7 @@ function connBlockStatus(status) {
         document.getElementById('cant-start').style.display = "none";
     } else {
         //When first connection established
-        if (client){
+        if (client) {
             document.getElementById('name-input-block').style.display = "block";
             document.getElementById('btn-save-log').style.display = "none";
             document.getElementById('btn-discard-log').style.display = "none";
@@ -216,9 +224,9 @@ function updateConnectionList() {
         connectionListString.push("<div>Clients:</div>")
         connections.forEach(c => {
             index = sim.users.findIndex((user => user.id == c.peer));
-            if(sim.users[index].name && sim.users[index].id && sim.users[index].roles){
+            if (sim.users[index].name && sim.users[index].id && sim.users[index].roles) {
                 connectionListString.push("<div><b>Name:</b> " + sim.users[index].name + " <b>ID:</b> " + sim.users[index].id + " <b>Roles:</b> " + sim.users[index].roles + "</div>")
-            }else{
+            } else {
                 connectionListString.push("<div><b>ID:</b> " + sim.users[index].id + " Setting name and roles.</div>")
             }
         })
