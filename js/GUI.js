@@ -74,11 +74,12 @@ export function handleTextAreaChange(updateOther = false, excludeFromUpdate = nu
         sim.changeGraph(x.value);
         fillDcrTable(sim.graph.status());
         document.getElementById("parse-error").innerHTML = "";
+       
         if (updateOther) {
             updateOthers({
                 type: 'textField',
                 id: 'ta-dcr',
-                data: document.getElementById('ta-dcr').value
+                data: document.getElementById('ta-dcr').value   
             }, excludeFromUpdate)
         }
     }
@@ -142,6 +143,7 @@ export function handleSimButtonClick(buttonID, updateOther = false, excludeFromU
         sim.startSimulation()
     } else if (buttonID == 'btn-start-auto-sim') {
         document.getElementById("sim-status").innerHTML = "Simulation running.";
+        document.getElementById("ta-dcr").disabled = true;
         if(server || (!server && !client)){
             document.getElementById('btn-pause-auto-sim').style.display = "block";
             document.getElementById('btn-stop-auto-sim').style.display = "block";
@@ -161,8 +163,9 @@ export function handleSimButtonClick(buttonID, updateOther = false, excludeFromU
         handleTextAreaChange(true, myId)
         sim.startSimulation()
     } else if (buttonID == 'btn-stop-manual-sim') {
+        document.getElementById("ta-dcr").disabled = false;
         if(server || (!server && !client)){
-            document.getElementById("ta-dcr").disabled = false;
+            
             document.getElementById('btn-pause-manual-sim').style.display = "none";
             document.getElementById('btn-stop-manual-sim').style.display = "none";
             document.getElementById('btn-start-manual-sim').style.display = "block";
@@ -177,6 +180,7 @@ export function handleSimButtonClick(buttonID, updateOther = false, excludeFromU
         document.getElementById('btn-discard-log').style.display = "block";
         sim.stopSimulation()
     } else if (buttonID == 'btn-stop-auto-sim') {
+        document.getElementById("ta-dcr").disabled = false;
         if(server || (!server && !client)){
             document.getElementById('btn-pause-auto-sim').style.display = "none";
             document.getElementById('btn-stop-auto-sim').style.display = "none";
@@ -320,14 +324,15 @@ $(document).ready(function (e) {
         } else {
             document.getElementById("cant-start").innerHTML = "";
             handleSimButtonClick(this.id, true, myId);
-            document.getElementById("ta-dcr").disabled = true;
+            
+            
 
         }
     });
 
     $('#btn-stop-manual-sim').click(function (e) {
-
-        document.getElementById("ta-dcr").disabled = false;
+        
+        
         handleSimButtonClick(this.id, true, myId);
   });
 

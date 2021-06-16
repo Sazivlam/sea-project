@@ -8,6 +8,7 @@ test('graph with 1 event', () => {
     expect(keys).toStrictEqual(["A"]);
 });
 
+
 test('graph with 2 events', () => {
     var sim = new Simulation("A(0,0,0)\n B(0,0,0)");
     var keys = Array.from(sim.graph.events.keys());
@@ -63,3 +64,4 @@ test('graph with 1 event', () => {
     sim.addUsers(user)
     expect(sim.users).toStrictEqual([user]);
 });
+
