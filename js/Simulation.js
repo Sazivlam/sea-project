@@ -1,5 +1,5 @@
 import Log from "./Log/LogObject"
-import {parser} from "./dcr_parser"
+import { parser } from "./dcr_parser"
 export default class Simulation {
 
     constructor(input) {
@@ -27,7 +27,7 @@ export default class Simulation {
     startSimulation() {
         this.isRunning = true;
         this.log.discardLog();
-        this.log.logEvent("Trace","ID", "Name", "Event", "Date", "Roles");
+        this.log.logEvent("Trace", "ID", "Name", "Event", "Date", "Roles");
         this.startTime = new Date().toLocaleString();
     }
 
@@ -37,12 +37,12 @@ export default class Simulation {
         this.stopTime = new Date().toLocaleString();
     }
 
-    pauseSimulation(){
+    pauseSimulation() {
         this.isRunning = false;
         this.isPaused = true;
     }
 
-    resumeSimulation(){
+    resumeSimulation() {
         this.isRunning = true;
         this.isPaused = false;
     }
@@ -54,7 +54,7 @@ export default class Simulation {
     checkIfReady() {
         this.ready = true
         this.users.forEach(u => {
-            if(!u.name || !u.id || !u.roles){
+            if (!u.name || !u.id || !u.roles) {
                 this.ready = false
             }
         });
@@ -67,14 +67,6 @@ export default class Simulation {
 
     discardLog() {
         this.log.discardLog()
-    }
-
-    hello() {
-        if (this.isRunning) {
-            console.log("Hello, i AM running :)");
-        } else {
-            console.log("Hello, i am NOT running :(");
-        }
     }
 }
 
