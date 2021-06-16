@@ -40,18 +40,10 @@ p ,div {
 
 }
 
-#iter {
-    
-    float : right; 
-    float : top;
-    overflow: hidden; 
-    
 
-}
+#buttonsandareas{
 
-#log_text{
-
-    float: right;
+    position: relative
     
     
 }
@@ -63,8 +55,10 @@ p ,div {
 }
 
 #start_sim_buttons{
-    float : right; 
-    float : top;
+    
+  position: absolute;
+  top: 0;
+  left: 50%;
 
 }
 
@@ -76,24 +70,53 @@ p ,div {
     
   }
 
+
+
   #iter{
     overflow-x: hidden;
     overflow-y: auto;
     height:600px;
     width: 600px;
+    
+    float : right; 
+    float : top;
+    overflow: hidden; 
+    
 
   }
+#btn-start-manual-sim , #btn-stop-manual-sim , #btn-resume-manual-sim, #btn-pause-manual-sim, 
+#btn-start-auto-sim,#btn-resume-auto-sim, #btn-pause-auto-sim,#btn-stop-auto-sim,
+#btn-save-log ,#btn-discard-log,#btn-download-model,#btn-role ,#btn-subname , #btn-iter-submit,#btn-trace-submit,#btn-conn{
+    
+    background-color: #CF5C36;
+}
+button {margin: 20px;
+    display:block;
+    border: none;
+  background-color: #CF5C36;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+    
+   
+}
+mdc-button mdc-button--raised{
+    background-color: #4CAF50;
 
-button {margin: 20px;}
+}
 
 body{
-    background: #FFEFBA;  /* fallback for old browsers */
+    background: #D8E4FF;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
     
      }
 
 
-#task-table tr:nth-child(odd){background-color: #b8f7a8;}
+#task-table tr:nth-child(odd){background-color: #EFC88B;}
 
-#task-table tr:nth-child(even){background-color: #dbdfff;}
+#task-table tr:nth-child(even){background-color: #F4E3B2;}
