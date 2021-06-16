@@ -5,3 +5,4 @@ test('graph with 1 event', () => {
     var keys = Array.from(sim.graph.events.keys())
     expect(keys).toStrictEqual(["A"]);
 });
+
