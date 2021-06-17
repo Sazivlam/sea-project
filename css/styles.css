@@ -62,13 +62,12 @@ div {
 
 #iter {
 	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-y: scroll;
 	height: 600px;
 	width: 750px;
-
 	float: right;
 	float: top;
-	overflow: hidden;
+	
 }
 #btn-start-manual-sim,
 #btn-stop-manual-sim,
