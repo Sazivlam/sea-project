@@ -298,9 +298,11 @@ $(document).ready(function (e) {
         'There are no items to list...');
 
     $('#btn-start-auto-sim').click(function (e) {
-        if(!sim.checkIfReady()){
+         if (!sim.checkIfReady() ) {
             document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
-        }else{
+        } else if (document.getElementById("parse-error").innerHTML !== "") {
+            document.getElementById("cant-start").innerHTML = "The specified graph is invalid.";
+        } else{
             document.getElementById("cant-start").innerHTML = "";
             document.getElementById('peer-input-block').style.display = "none";
             document.getElementById('trace-input-block').style.display = "block";
@@ -322,14 +324,13 @@ $(document).ready(function (e) {
     });
 
     $('#btn-start-manual-sim').click(function (e) {
-        if (!sim.checkIfReady()) {
+        if (!sim.checkIfReady() ) {
             document.getElementById("cant-start").innerHTML = "There are connected users with no name and/or roles set.";
-        } else {
+        } else if (document.getElementById("parse-error").innerHTML !== "") {
+            document.getElementById("cant-start").innerHTML = "The specified graph is invalid.";
+        } else  {
             document.getElementById("cant-start").innerHTML = "";
             handleSimButtonClick(this.id, true, myId);
-            
-            
-
         }
     });
 
