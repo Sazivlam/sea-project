@@ -143,10 +143,8 @@ function executeUpdateEvent(data, updateOthers = false, excludeFromUpdate = null
             sim.users[index].roles = [];
         }
     } else if (data.type == 'nextTrace') {
-        currentTrace ++
-        currentIter ++
-        iterations = [];
-        document.getElementById("iter").innerHTML = "";
+        document.getElementById("iter").innerHTML = "";~
+        handleNextTrace(updateOthers,excludeFromUpdate);
     }else if (data.type == 'name') {
         index = sim.users.findIndex((user => user.id == data.id));
         sim.users[index].name = data.data;
@@ -189,10 +187,10 @@ function connBlockStatus(status) {
         document.getElementById('conn-list').style.display = "none";
         document.getElementById('server-id').style.display = "none";
         document.getElementById('name-input-block').style.display = "none";
-        document.getElementById('btn-start-sim').style.display = "inline";
-        document.getElementById('btn-stop-sim').style.display = "inline";
-        document.getElementById('btn-start-manual-sim').style.display = "inline";
-        document.getElementById('btn-stop-manual-sim').style.display = "inline";
+        document.getElementById('btn-start-auto-sim').style.display = "block";
+        document.getElementById('btn-stop-auto-sim').style.display = "none";
+        document.getElementById('btn-start-manual-sim').style.display = "block";
+        document.getElementById('btn-stop-manual-sim').style.display = "none";
         document.getElementById('my-roles').style.display = "none";
         document.getElementById('my-name').style.display = "none";
         document.getElementById('role-select-block').style.display = "none";
@@ -221,7 +219,7 @@ function connBlockStatus(status) {
 function updateConnectionList() {
     var connectionListString = [];
     if (server) {
-        connectionListString.push("<div>Clients:</div>")
+        connectionListString.push("<br/><div>Clients:</div>")
         connections.forEach(c => {
             index = sim.users.findIndex((user => user.id == c.peer));
             if (sim.users[index].name && sim.users[index].id && sim.users[index].roles) {
@@ -232,7 +230,7 @@ function updateConnectionList() {
         })
         document.getElementById('conn-list').innerHTML = connectionListString.join('') + "<br/>";
     } else {
-        connectionListString.push("<div>Server: </div>")
+        connectionListString.push("<br/><div>Server:</div>")
         connections.forEach(c => {
             index = sim.users.findIndex((user => user.id == c.peer));
             connectionListString.push("<div><b>Name:</b> " + sim.users[index].name + " <b>ID:</b> " + sim.users[index].id + " <b>Roles:</b> " + sim.users[index].roles + "</div>")
@@ -247,10 +245,10 @@ async function connectionChecker() {
         connected = false;
         server = false;
         client = false;
-        document.getElementById('btn-start-sim').style.display = "inline";
-        document.getElementById('btn-stop-sim').style.display = "inline";
-        document.getElementById('btn-start-manual-sim').style.display = "inline";
-        document.getElementById('btn-stop-manual-sim').style.display = "inline";
+        document.getElementById('btn-start-auto-sim').style.display = "block";
+        document.getElementById('btn-stop-auto-sim').style.display = "none";
+        document.getElementById('btn-start-manual-sim').style.display = "block";
+        document.getElementById('btn-stop-manual-sim').style.display = "none";
         document.getElementById('my-roles').style.display = "none";
         document.getElementById('my-name').style.display = "none";
         document.getElementById('name-input-block').style.display = "none";
@@ -259,6 +257,7 @@ async function connectionChecker() {
         document.getElementById('btn-discard-log').style.display = "none";
         document.getElementById('sim-status').style.display = "none";
         document.getElementById('cant-start').style.display = "none";
+        document.getElementById('peer-input-block').style.display = "block";
         sim.users = [];
         user = new User(myId, "server", ["Robot", "Human"])
         handleNewUser(user, true)

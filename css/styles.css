@@ -1,122 +1,119 @@
-html, body {
-    padding: 5px;
+html,
+body {
+	padding: 5px;
 }
 
 #task-table {
-    font-family: calibri, arial;
-    border-collapse: collapse;
-    
-    text-align:center;
-    width:40%; 
-    margin-left:15%; 
-    margin-right:15%;
-
-
-
-
+	font-family: calibri, arial;
+	border-collapse: collapse;
+	text-align: center;
+	width: 40%;
+	margin-left: 15%;
+	margin-right: 15%;
 }
 #ta-dcr {
-    width: 600px;
-    height: 200px;
+	width: 600px;
+	height: 200px;
 }
-p ,div {
-    font-family: Helvetica, Arial, sans-serif;
+p,
+div {
+	font-family: Helvetica, Arial, sans-serif;
 }
 /* #peer-input-block , #my-id , #conn-status , #server-id , #conn-list {
     text-align:center;
 }
 */
-.important{
-    font-weight: bold;
+.important {
+	font-weight: bold;
 }
 
 #accepting {
-    width:40%; 
-    margin-left:30%; 
-    margin-right:25%;
-    height: auto;
-    font-size: 30px;
-    font-family: unquote("Roboto");
-
+	width: 40%;
+	margin-left: 30%;
+	margin-right: 25%;
+	height: auto;
+	font-size: 30px;
+	font-family: unquote('Roboto');
 }
 
-
-#buttonsandareas{
-
-    position: relative
-    
-    
+#buttonsandareas {
+	position: relative;
 }
 
 #task-table td {
-    text-align: center;
-    padding: 8px;
-    border: 1px solid black;   
+	text-align: center;
+	padding: 8px;
+	border: 1px solid black;
 }
 
-#start_sim_buttons{
-    
-  position: absolute;
-  top: 0;
-  left: 50%;
-
+#start_sim_buttons {
+	position: absolute;
+	bottom: 10%;
+	left: 40%;
 }
 
-#myinfo, #iter{ 
-    width: 300px;
-    border: 3px solid black;
-    padding: 30px;
-    margin: 20px;
-    
-  }
-
-
-
-  #iter{
-    overflow-x: hidden;
-    overflow-y: auto;
-    height:600px;
-    width: 600px;
-    
-    float : right; 
-    float : top;
-    overflow: hidden; 
-    
-
-  }
-#btn-start-manual-sim , #btn-stop-manual-sim , #btn-resume-manual-sim, #btn-pause-manual-sim, 
-#btn-start-auto-sim,#btn-resume-auto-sim, #btn-pause-auto-sim,#btn-stop-auto-sim,
-#btn-save-log ,#btn-discard-log,#btn-download-model,#btn-role ,#btn-subname , #btn-iter-submit,#btn-trace-submit,#btn-conn{
-    
-    background-color: #CF5C36;
-}
-button {margin: 20px;
-    display:block;
-    border: none;
-  background-color: #CF5C36;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-    
-   
-}
-mdc-button mdc-button--raised{
-    background-color: #4CAF50;
-
+#myinfo,
+#iter {
+	width: 520px;
+	border: 3px solid black;
+	padding: 30px;
+	margin: 20px;
 }
 
-body{
-    background: #D8E4FF;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    
-    
-     }
+#iter {
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 600px;
+	width: 750px;
 
+	float: right;
+	float: top;
+	overflow: hidden;
+}
+#btn-start-manual-sim,
+#btn-stop-manual-sim,
+#btn-resume-manual-sim,
+#btn-pause-manual-sim,
+#btn-start-auto-sim,
+#btn-resume-auto-sim,
+#btn-pause-auto-sim,
+#btn-stop-auto-sim,
+#btn-save-log,
+#btn-discard-log,
+#btn-download-model,
+#btn-role,
+#btn-subname,
+#btn-iter-submit,
+#btn-trace-submit,
+#btn-conn {
+	background-color: #cf5c36;
+}
+button {
+	margin: 20px;
+	display: block;
+	border: none;
+	background-color: #cf5c36;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+}
+mdc-button mdc-button--raised {
+	background-color: #4caf50;
+}
 
-#task-table tr:nth-child(odd){background-color: #EFC88B;}
+body {
+	background: #d8e4ff; /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #ffffff, #ffefba); /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #ffffff, #ffefba); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
 
-#task-table tr:nth-child(even){background-color: #F4E3B2;}
+#task-table tr:nth-child(odd) {
+	background-color: #efc88b;
+}
+
+#task-table tr:nth-child(even) {
+	background-color: #f4e3b2;
+}

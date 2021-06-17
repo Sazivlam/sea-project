@@ -3,7 +3,6 @@ import { dynamicTable } from "./dynamic_table"
 import { updateOthers, connect, myId, server, client} from "./communication"
 import download from "./utilities"
 var taskTable;
-var numIter = 0;
 var iterations = [];
 var currentTrace = 1;
 var currentIter = 1;
@@ -17,7 +16,7 @@ function fillDcrTable(status) {
         row.executed = (row.executed ? "V:" + row.lastExecuted : "");
         row.pending = (row.pending ? "!" + (row.deadline === undefined ? "" : ":" + row.deadline) : "");
         row.included = (row.included ? "" : "%");
-        row.name = "<button " + (row.enabled ? "" : "disabled") + " id='" + row.label + "' " + ">" + row.label + "</button>";
+        row.name = "<button class='mdc-button mdc-button--raised'" + (row.enabled ? "" : "disabled") + " id='" + row.label + "' style='background-color:" + (row.enabled ? "#cf5c36" : "silver") + "'" + ">" + row.label + "</button>";
     }
     taskTable.load(status);
     for (var row of status){
@@ -115,6 +114,10 @@ export function handleNewUser(user, updateOther = false, excludeFromUpdate = nul
 
 export function handleNextTrace(updateOther = false, excludeFromUpdate = null) {
     handleTextAreaChange(true, myId)
+    if (client){
+        currentTrace ++;
+        iterations = [];
+    }
     if (updateOther) {
         updateOthers({ type: 'nextTrace'}, excludeFromUpdate)
     }

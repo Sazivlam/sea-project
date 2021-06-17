@@ -22,15 +22,15 @@
 
   <script src="out.js"></script>
 
-  <table  id="task-table"></table>
+  <table  id="task-table" ></table>
 
   
   <br />
   <p id="accepting"></p>
 
   <br />
-  <div id= "myinfo">
-  <p > <h2> My Information : </h2> </p>
+  <div id= "myinfo" style="text-align: center;">
+  <p > <h2> My Information </h2> </p>
   <div id="peer-input-block">
     <div id="peer-input-text">Enter server ID or wait for client to connect</div>
     <input id="peer-input-id">
@@ -88,20 +88,17 @@
   <div id="start_sim_buttons">
   <button class="mdc-button mdc-button--raised" id="btn-start-manual-sim">Start manual simulation</button>&nbsp;
   <br />
+  <button class="mdc-button mdc-button--raised" id="btn-resume-manual-sim" style="display: none;">Resume manual
+    simulation</button>&nbsp;
+  <br />
+  <button class="mdc-button mdc-button--raised" id="btn-pause-manual-sim" style="display: none;">Pause manual
+    simulation</button>&nbsp;
+
   <button class="mdc-button mdc-button--raised" id="btn-stop-manual-sim" style="display: none;" >Stop manual simulation</button>&nbsp;
   <br />
 
-  <button class="mdc-button mdc-button--raised" id="btn-resume-manual-sim" style="display: none;">Resume manual simulation</button>&nbsp;
-  <br />
-
-  <button class="mdc-button mdc-button--raised" id="btn-pause-manual-sim" style="display: none;">Pause manual simulation</button>&nbsp;
-  
-
-  
-  <br />
-
   <button class="mdc-button mdc-button--raised" id="btn-start-auto-sim">
-    <span class="mdc-button__label">Start Auto Simulation</span></button>&nbsp;
+   Start Auto Simulation</button>&nbsp;
   <br />
   
   <button class="mdc-button mdc-button--raised" id="btn-resume-auto-sim" style="display: none;">Resume auto
@@ -114,7 +111,7 @@
   
   
   <button class="mdc-button mdc-button--raised" id="btn-stop-auto-sim" style="display: none;">
-    <span class="mdc-button__label">Stop Auto Simulation</span></button>&nbsp;
+    Stop Auto Simulation</button>&nbsp;
   <br />
   
   <button class="mdc-button mdc-button--raised" id="btn-save-log" style="display: none;">Save log</button>&nbsp;
