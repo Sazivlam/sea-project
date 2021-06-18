@@ -2,6 +2,10 @@
 
 The repo contains code for doing collaborative simulation with DCRGraphs.
 
+# Running the app
+
+To use the app run the `index.html` file in a modern browser.
+
 ## Dev setup
 The code is written in javascript and uses some librarie, and thus NPM needs to be installed. This can be done on mac with `brew intall npm`, debian based linux with `sudo apt install npm`  and windows with `scoop install npm`.
 
