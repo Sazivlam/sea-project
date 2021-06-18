@@ -12,8 +12,8 @@ body {
 	margin-right: 15%;
 }
 #ta-dcr {
-	width: 600px;
-	height: 200px;
+	width: 20%;
+	height: 20%;
 }
 p,
 div {
@@ -52,21 +52,23 @@ div {
 	left: 40%;
 }
 
-#myinfo,
-#iter {
-	width: 520px;
+#myinfo {
+	width: 30%;
 	border: 3px solid black;
 	padding: 30px;
 	margin: 20px;
 }
 
 #iter {
-	overflow-x: hidden;
+	
 	overflow-y: scroll;
-	height: 600px;
-	width: 750px;
+	height: 300px;
+	width: 30%;
 	float: right;
 	float: top;
+	border: 3px solid black;
+	padding: 30px;
+	margin: 20px;
 	
 }
 #btn-start-manual-sim,
