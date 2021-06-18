@@ -10,13 +10,6 @@ export default class Log {
 
         this.Entries = [];
     }
-
-    // For testing purposes
-    toString() {
-        this.Entries.forEach(function (entryRow){
-            console.log(entryRow.toString());
-        });
-    }
     
     // To log events, whenever anything is done in the graph.
     logEvent(trace, id, username, eventName, timestamp, role)

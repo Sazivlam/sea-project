@@ -8,11 +8,6 @@ export default class Entry {
         this.Trace = trace;
     }
 
-
-    toString() {
-        return "(" + this.Trace + "," + this.Id + "," + this.UserName + "," + this.EventName + "," + this.Timestamp + ", [" + this.Roles + "]," + ")";
-    }
-
     toCsv() {
         return [this.Trace, this.Id, this.UserName, this.EventName, this.Timestamp, "[" + this.Roles + "]"];
     }
