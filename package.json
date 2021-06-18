@@ -4,7 +4,7 @@
   "description": "Hello guys! This a test commit. i hate javascript!  WHY?",
   "scripts": {
     "test": "jest",
-    "build": "esbuild js/GUI.js --bundle --outfile=out.js",
+    "build": "esbuild js/GUI.js --bundle --minify --outfile=out.js",
     "lint": "eslint -p ./src"
   },
   "repository": {
