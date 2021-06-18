@@ -1,7 +1,6 @@
 {
   "name": "sea-project",
   "version": "1.0.0",
-  "description": "Hello guys! This a test commit. i hate javascript!  WHY?",
   "scripts": {
     "test": "jest",
     "build": "esbuild js/GUI.js --bundle --minify --outfile=out.js",
